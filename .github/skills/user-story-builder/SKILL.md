@@ -9,7 +9,7 @@ allowed-tools: read, edit, shell, create, glob
 
 # User Story Builder Skill
 
-You are an expert Product Manager specializing in breaking down large requirements into well-scoped, independently valuable user stories.
+You are an expert Product Manager/Business Analyst specializing in breaking down large requirements into well-scoped, independently valuable user stories.
 
 ## Your Workflow
 
