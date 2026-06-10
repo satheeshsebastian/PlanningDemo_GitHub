@@ -39,121 +39,125 @@ Every workflow run will be tracked with:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           PLANNING WORKFLOW - 6 STAGES                      │
+│           PLANNING WORKFLOW - MASTER ORCHESTRATION          │
+│                    (planning-workflow.md)                   │
 └─────────────────────────────────────────────────────────────┘
 
-Stage 1: INPUT & ENHANCEMENT CHECK
-├─ Accept raw requirement input
-├─ Check if enhancement to existing feature
-└─ User confirms: New or Update?
-
-                        ↓
-
-Stage 2: BRAINSTORMING & BRD GENERATION
-├─ Analyze requirement (BMAD framework)
-├─ Generate 2-3 clarifying questions simple and direct Wait for user responses after each question
-├─ MANDATORY PAUSE: Wait for user responses
-├─ Synthesize feedback
-└─ Generate formal BRD document
-
-                        ↓
-
-Stage 3: USER STORY DECOMPOSITION
-├─ Analyze BRD
-├─ Identify distinct user stories
-├─ Create individual story files
-├─ Generate story map with dependencies
-└─ User reviews stories (OPTIONAL PAUSE)
-
-                        ↓
-
-Stage 4: FUNCTIONAL TEST CASE WRITING
-├─ Analyze acceptance criteria from stories
-├─ Generate comprehensive test cases
-├─ Cover: Happy path, Errors, Edge cases
-├─ Create test matrices
-└─ Generate test case documents
-
-                        ↓
-
-Stage 5: GITHUB INTEGRATION
-├─ Parse user stories
-├─ Create GitHub issues from stories
-├─ Create test case issues (optional)
-├─ Link dependencies between issues
-├─ Create tracking artifact (issue-map.json)
-└─ Generate GitHub sync summary
-
-                        ↓
-
-Stage 6: COMPLETION & SUMMARY
-├─ Generate workflow completion report
-├─ List all artifacts created
-├─ Provide next steps
-└─ Confirm ready for development
+                    INPUT & ENHANCEMENT DETECTION
+                           Stage 1
+                          /      \
+                         /        \
+            NO MATCH (< 40%)    MATCH (> 70%)
+                   /                  \
+                  /                    \
+    ┌─────────────────────┐  ┌──────────────────────────┐
+    │ NORMAL WORKFLOW     │  │ ENHANCEMENT WORKFLOW     │
+    │ (New Feature)       │  │ (Existing Feature)       │
+    │                     │  │                          │
+    │ normal-planning.yml │  │ enhancement-planning.yml │
+    │                     │  │                          │
+    │ ├─ brd-generator    │  │ ├─ enhancement-modifier  │
+    │ ├─ user-story-      │  │ ├─ enhancement-story-    │
+    │ │  builder          │  │ │  updater               │
+    │ └─ functional-tests │  │ └─ functional-tests      │
+    │    (optional)       │  │    (optional)            │
+    └─────────────────────┘  └──────────────────────────┘
+             │                          │
+             └──────────────┬───────────┘
+                            │
+                    GitHub Integration
+                    (github-issue-uploader)
+                           Stage 5
+                            │
+                     Completion & Summary
+                           Stage 6
 ```
 
 ---
 
 ## Stage 1: Input & Enhancement Detection
 
-## Stage 1: Input & Enhancement Detection
-
 **LLM Configuration**: See `planning-llm-config.md` - Enhancement Detector section
+
+**Workflow Execution**:
+- **NEW FEATURE**: Routes to `.github/workflows/normal-planning.yml`
+- **ENHANCEMENT**: Routes to `.github/workflows/enhancement-planning.yml`
 
 **Process**:
 - Request raw requirement input if not provided
 - Invoke **enhancement-detector** skill
   - LLM: Claude Sonnet 4.6 (primary)
   - Tokens: ~3-7K estimated
-- Analyze for existing BRD, stories, test cases
-- Display findings with confidence scores
-- Ask user: **"New Feature or Enhancement?"**
+- **ACTIVE SEARCH**: Scans `features/brd/` and `features/user-stories/` for matches
+- Display findings with confidence scores (0-100%)
+- **Auto-recommend**: UPDATE vs CREATE based on match > 70%
+- Ask user: **"Proceed with enhancement or create new feature?"**
 
 **Execution Tracking**:
 - Recorded in execution report (Stage 1 section)
 - LLM selection + tokens logged
 - Decision captured
+- Workflow path selected (normal or enhancement)
 
 ---
 
 ## Stage 2: Brainstorming & BRD Generation
 
+**Workflow Path**: 
+- **NEW FEATURE** → `.github/workflows/normal-planning.yml` (Step 2)
+- **ENHANCEMENT** → `.github/workflows/enhancement-planning.yml` (Step 2)
+
 **LLM Configuration**: See `planning-llm-config.md` - BRD Generator section
 
-**Process**:
+### For NEW Features:
 1. Invoke **brd-generator** skill
    - LLM: Claude Sonnet 4.6 (primary) or Claude Opus 4.8 (if escalated)
-   - See config for escalation triggers
    - Tokens: ~4-7K estimated
 2. Perform BMAD analysis
-3. Generate 4-6 clarifying questions
-4. **MANDATORY PAUSE** - Wait for user answers
+3. Generate **2-3 clarifying questions** (conversational, one at a time)
+4. **MANDATORY PAUSE** - Wait for user answers after each question
 5. Synthesize feedback
-6. SPEC-IT clarity validation (flag vague requirements)
-7. Extract assumptions (ASSUMPTION-001, etc.)
-8. Generate formal BRD
-9. **APPROVAL GATE 1**: Stakeholder sign-off required
-10. Save to `features/brd/[slug]-v1.0.md` and assumptions file
+6. Extract assumptions (ASSUMPTION-001, etc.)
+7. Generate formal BRD (v1.0)
+8. **APPROVAL GATE 1**: Stakeholder sign-off required
+9. Save to `features/brd/[slug]-v1.0.md` and assumptions file
+
+### For ENHANCEMENTS:
+1. Invoke **enhancement-modifier** skill (NEW)
+   - LLM: Claude Sonnet 4.6 (primary)
+   - Tokens: ~3-5K estimated
+2. Ask 1 clarification question if scope is ambiguous (optional)
+3. Load existing BRD
+4. Identify sections for modification
+5. Determine version bump:
+   - **MINOR** (v2.0 → v2.1): Backward-compatible extensions
+   - **MAJOR** (v2.0 → v3.0): Breaking changes
+6. Merge new requirements (add without replacing)
+7. Update assumptions (add ASSUMPTION-007, etc.)
+8. Generate `CHANGELOG.md` with all changes
+9. Save to `features/brd/[slug]-v[N].md` (updated version)
 
 **Execution Tracking**:
+- Workflow path taken (normal vs enhancement)
 - LLM used, version, and selection rationale
 - Input tokens (requirement size)
 - Output tokens (BRD generation)
-- Quality score (SPEC-IT compliance)
-- Assumptions extracted
+- Version bump strategy (if enhancement)
 - Approval status
 
 ---
 
 ## Stage 3: User Story Decomposition
 
+**Workflow Path**:
+- **NEW FEATURE** → `.github/workflows/normal-planning.yml` (Step 3)
+- **ENHANCEMENT** → `.github/workflows/enhancement-planning.yml` (Step 3)
+
 **LLM Configuration**: See `planning-llm-config.md` - User Story Builder section
 
-**Process**:
+### For NEW Features:
 1. Invoke **user-story-builder** skill
    - LLM: Claude Sonnet 4.6 (primary) or Claude Opus 4.8 (if escalated)
-   - Maintain consistency with Stage 2 LLM if possible
    - Tokens: ~6-11K estimated
 2. Analyze completed BRD
 3. Identify [N] distinct user stories
@@ -162,18 +166,41 @@ Stage 6: COMPLETION & SUMMARY
    - Story point breakdown (justified)
    - Assumption references
    - Traceability IDs (SC-001, SC-002, etc.)
-5. Create individual story files
+5. **CREATE INDIVIDUAL STORY FILES** (CRITICAL)
+   - One `.md` file per story: `features/user-stories/[slug].md`
+   - No batching—each file created separately
 6. Generate story map with dependencies
-7. **INVEST Health Check**: Validate all stories
-8. **APPROVAL GATE 2**: Product owner review required
-9. Save to `features/user-stories/[slug-*.md]`
-10. Generate traceability JSON
+7. Generate story-traceability.json
+8. **INVEST Health Check**: Validate all stories
+9. **APPROVAL GATE 2**: Product owner review required
+10. Save all artifacts
+
+### For ENHANCEMENTS:
+1. Invoke **enhancement-story-updater** skill (NEW)
+   - LLM: Claude Sonnet 4.6 (primary)
+   - Tokens: ~5-8K estimated
+2. Load existing stories and story-map
+3. **MODIFY EXISTING STORIES**:
+   - Expand acceptance criteria (add new AC without removing old)
+   - Update story points if scope significantly expanded
+   - Update dependencies if new blockers
+   - Update assumptions if new ones added
+   - Mark all changes with "[MODIFIED in v2.1]"
+4. **CREATE NEW STORIES** for new capabilities:
+   - Continue story ID sequence (SC-014, SC-015, etc.)
+   - Link to modified stories as dependencies
+   - Mark as "[NEW in v2.1]"
+5. Update story-map.md with new totals and relationships
+6. Update story-traceability.json with modified entries
+7. Save all updated story files
+8. Generate summary of changes
 
 **Execution Tracking**:
+- Workflow path taken (normal vs enhancement)
 - LLM consistency (same as Stage 2?)
-- Input tokens (BRD + assumptions)
+- Input tokens (BRD + assumptions or existing stories)
 - Output tokens (stories + map)
-- Stories generated count
+- Stories generated count (new) or modified count (enhancement)
 - MOSCOW distribution
 - Approval status
 
@@ -276,6 +303,104 @@ Stage 6: COMPLETION & SUMMARY
 
 ---
 
+## Workflow Architecture & Routing
+
+### Master Workflow (`planning-workflow.md` - This Document)
+- **Purpose**: Defines the complete planning process (6 stages)
+- **Entry Point**: User provides requirements
+- **Decision Point**: Stage 1 - Enhancement Detection
+- **Routing**: Directs to appropriate sub-workflow based on feature detection
+
+### Normal Planning Workflow (`.github/workflows/normal-planning.yml`)
+**When to Use**: Feature is brand new (enhancement-detector finds NO match)
+
+**Flow**:
+```
+Stage 1: enhancement-detector
+         └─ Result: NO MATCH
+                    ↓
+Stage 2: brd-generator
+         └─ Generates v1.0 BRD
+                    ↓
+Stage 3: user-story-builder
+         └─ Creates individual story files
+                    ↓
+Stage 4: functional-test-writer (optional)
+         └─ Generates test cases
+                    ↓
+Stage 5: github-issue-uploader (optional)
+         └─ Creates GitHub issues
+                    ↓
+Stage 6: Completion report
+```
+
+**Artifacts Generated**:
+- `features/brd/[slug]-v1.0.md` (new BRD)
+- `features/brd/[slug]-assumptions.md` (assumptions)
+- `features/user-stories/[slug-1].md` ... `[slug-N].md` (individual stories)
+- `features/user-stories/story-map-[slug].md` (dependency map)
+- `features/user-stories/story-traceability.json` (traceability)
+- `features/test-cases/[slug]-test-cases.md` (if tests enabled)
+- `features/github-sync/[slug]-issue-map.json` (if GitHub enabled)
+
+### Enhancement Planning Workflow (`.github/workflows/enhancement-planning.yml`)
+**When to Use**: Feature exists and you want to enhance it (enhancement-detector finds MATCH > 70%)
+
+**Flow**:
+```
+Stage 1: enhancement-detector
+         └─ Result: MATCH FOUND
+                    │
+                    └─ Returns: existing BRD path, confidence %
+                                ↓
+Stage 2: enhancement-modifier
+         └─ Updates BRD v2.0 → v2.1
+         └─ Adds new requirements without replacing
+         └─ Creates CHANGELOG.md
+                    ↓
+Stage 3: enhancement-story-updater
+         └─ Modifies existing stories (expand AC)
+         └─ Creates new stories for new features
+         └─ Updates story-map and traceability
+                    ↓
+Stage 4: functional-test-writer (optional)
+         └─ Generates tests for modified/new stories
+                    ↓
+Stage 5: github-issue-uploader (optional)
+         └─ Updates existing issues + creates new ones
+                    ↓
+Stage 6: Completion report
+```
+
+**Artifacts Generated/Updated**:
+- `features/brd/[slug]-v2.1.md` (updated BRD, version bumped)
+- `features/brd/[slug]-assumptions.md` (assumptions updated)
+- `features/user-stories/[slug-existing].md` (modified)
+- `features/user-stories/[slug-new].md` (newly created)
+- `features/user-stories/story-map-[slug].md` (updated totals)
+- `features/user-stories/story-traceability.json` (updated mappings)
+- `features/CHANGELOG.md` (new file tracking changes)
+- `features/test-cases/[slug]-test-cases.md` (if tests enabled)
+- `features/github-sync/[slug]-issue-map.json` (if GitHub enabled)
+
+### Decision Logic (Stage 1)
+
+**Enhancement Detector performs**:
+1. Extract keywords from user input
+2. Search `features/brd/` for matching BRD files
+3. Search `features/user-stories/` for matching story files
+4. Calculate relevance score for each match (0-100%)
+5. Provide recommendation:
+   - **Score > 70%**: RECOMMEND UPDATE (enhancement path)
+   - **Score 40-70%**: RECOMMEND CREATE NEW (with note about partial overlap)
+   - **Score < 40%**: RECOMMEND CREATE NEW (no overlap)
+
+**User Decision**:
+- Accepts recommendation → Routes to appropriate workflow
+- Overrides recommendation → Routes to chosen workflow
+
+---
+
 ## When to Use Enhancement vs. New Feature
 
 ### Use **Enhancement** when:
@@ -283,12 +408,16 @@ Stage 6: COMPLETION & SUMMARY
 - New requirements extend existing user stories
 - Integration with existing system is primary
 - Existing BRD covers 70%+ of scope
+- Want to maintain version history (v1.0 → v2.1)
+- Backward compatibility is important
 
 ### Use **New Feature** when:
 - Completely separate capability
 - No relationship to existing features
 - Different user audience
 - Separate deployment/release
+- Existing BRD covers < 40% of new scope
+- Independent feature set
 
 ---
 
@@ -345,20 +474,28 @@ Your planning workflow succeeds when:
 │   ├── user-story-builder/SKILL.md
 │   ├── functional-test-writer/SKILL.md
 │   ├── enhancement-detector/SKILL.md
+│   ├── enhancement-modifier/SKILL.md    ← NEW (for enhancements)
+│   ├── enhancement-story-updater/SKILL.md ← NEW (for enhancements)
 │   └── github-issue-uploader/SKILL.md
 └── workflows/
-    └── planning-workflow.md             ← This file
+    ├── planning-workflow.md             ← Master orchestration (this file)
+    ├── normal-planning.yml              ← NEW (new feature path)
+    └── enhancement-planning.yml         ← NEW (enhancement path)
 
 features/
 ├── brd/
-│   └── [slug]-v1.0.md                   ← Generated BRDs
+│   ├── [slug]-v1.0.md                   ← Generated BRDs (new features)
+│   └── [slug]-v2.1.md                   ← Updated BRDs (enhancements)
 ├── user-stories/
-│   ├── [slug].md                        ← Individual stories
-│   └── story-map-[slug].md              ← Dependency map
+│   ├── [slug-1].md                      ← Individual stories
+│   ├── [slug-2].md
+│   ├── story-map-[slug].md              ← Dependency map
+│   └── story-traceability.json          ← Story-to-requirement mapping
 ├── test-cases/
 │   └── [slug]-test-cases.md             ← Test cases
-└── github-sync/
-    └── [slug]-issue-map.json            ← GitHub tracking
+├── github-sync/
+│   └── [slug]-issue-map.json            ← GitHub tracking
+└── CHANGELOG.md                         ← Version tracking (enhancements)
 ```
 
 ---
