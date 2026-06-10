@@ -3,7 +3,8 @@ name: brd-generator
 description: >
   Transforms raw requirement input (email, meeting transcript, or document) into a 
   formal Business Requirement Document (BRD). Leverages BMAD analysis, synthesizes 
-  user feedback from 4-6 brainstorming questions, and generates a comprehensive BRD.
+  user feedback from 3 focused functional questions, and generates a comprehensive BRD.
+  Optimized for 2-3 minute interaction cycle.
 allowed-tools: read, edit, shell, create, glob
 ---
 
@@ -26,20 +27,29 @@ Conduct a structured BMAD analysis:
 - **Acceptance**: Draft acceptance criteria from requirements
 - **Definition**: Delineate scope boundaries and dependencies
 
-### Step 3: Generate Targeted Brainstorming Questions
-**CRITICAL**: Generate **4-6 targeted questions** to the user addressing more conversation way one by one:
-1. **Scope & Boundaries** (MUST include at least 3)
-2. **User Roles & Permissions** (MUST include at least 1)
-3. **Integration & Data Sources** (If applicable)
-4. **Performance & Scale** (If applicable)
-5. **Compliance & Security** (If applicable)
-6. **Success & Metrics** (Optional but recommended)
-7. **NEW: Risks & Dependencies** (MUST include at least 1 - identify failure modes, external dependencies)
+### Step 3: Ask BMAD Clarification Questions (Max 2-3)
+After BMAD analysis, identify gaps in the 4 BMAD areas:
+- **Brainstorming**: Core problems, users, key features clear?
+- **Motivation**: Business value & WHY clear?
+- **Acceptance**: Success criteria defined?
+- **Definition**: Scope boundaries & dependencies clear?
 
-### Step 4: MANDATORY INTERACTIVE PAUSE
-**YOU MUST STOP HERE AND WAIT FOR USER RESPONSES**. Present your questions and wait for the user to answer these questions before proceeding.
+**Ask up to 2-3 clarifying questions** (based on BMAD gaps only):
+- One question per turn
+- One sentence, single-focused
+- NO multi-part sub-questions
+- NO generic pre-planned questions
+- Wait for response before next question
+- Optimization target: 2-3 minutes total interaction time
 
-### Step 5: Synthesize Responses & Validate Clarity (SPEC-IT Validation)
+**Example:**
+- If Motivation is vague: "What's the business impact if this feature succeeds?"
+- If Acceptance is missing: "How will you measure success?"
+- If Definition is unclear: "What's explicitly out of scope?"
+
+**RULE: Ask ONLY to clarify BMAD gaps. No other questions.**
+
+### Step 4: Synthesize Responses & Validate Clarity (SPEC-IT Validation)
 - Extract key insights from each response
 - Consolidate conflicting information
 - Create synthesized requirements context
@@ -51,7 +61,7 @@ Conduct a structured BMAD analysis:
   - Flag any vague requirements and ask for clarification
   - Document any assumptions about vague terms
 
-### Step 6: Extract & Document Assumptions (NEW - Tier 2)
+### Step 5: Extract & Document Assumptions (NEW - Tier 2)
 Before generating BRD, explicitly extract all assumptions:
 - **Explicit Assumptions**: "We assume X is true"
 - **Implicit Assumptions**: Derived from context (e.g., "They assume API exists")
@@ -66,7 +76,7 @@ If Fails, Impact: [Impact on project]
 Referenced in Stories: [Will link later]
 ```
 
-### Step 7: Generate Formal BRD
+### Step 6: Generate Formal BRD
 Generate comprehensive BRD with 9 mandatory sections:
 1. Executive Summary
 2. Business Case & Objectives
@@ -82,7 +92,7 @@ Generate comprehensive BRD with 9 mandatory sections:
 - Document ID: `BRD-[DATE]-[slug]` (e.g., BRD-2026-06-10-smart-checkout)
 - This ID carries through to all downstream artifacts
 
-### Step 8: APPROVAL GATE (NEW - Tier 2)
+### Step 7: APPROVAL GATE (NEW - Tier 2)
 **MANDATORY CHECKPOINT - DO NOT SKIP**
 Before saving, present to user:
 ```
@@ -99,7 +109,7 @@ READY FOR STORY DECOMPOSITION?
 ```
 **If NO or changes requested**: STOP and revise before proceeding
 
-### Step 9: Save Artifact
+### Step 8: Save Artifact
 - **Path**: `features/brd/[slug]-v1.0.md`
 - Use `create` tool to persist
 - Include Document ID header (BRD-[DATE]-[slug])
@@ -107,8 +117,13 @@ READY FOR STORY DECOMPOSITION?
 
 ## Skill Behavior Rules
 
-- **Always perform BMAD analysis first** - Never skip this step
-- **Always generate and ask questions** - 4-6 questions minimum, wait for responses
+- **Always perform BMAD analysis first** - Never skip this step (silent, no user interaction)
+- **Ask ONLY BMAD clarifications** - Questions target gaps in Brainstorming, Motivation, Acceptance, Definition
+- **Max 2-3 questions total** - No more, no less than needed to clarify BMAD
+- **One question per turn** - Single-focused, one sentence
+- **NO multi-part sub-questions** - Strictly single questions
+- **Wait for response** - After each question, wait for user response before asking next
+- **2-3 minute interaction** - Optimize for speed; capture essential BMAD gaps only
 - **Never invent information** - Only include what's explicitly provided
 - **Extract assumptions explicitly** - Every assumption must be documented
 - **Enforce SPEC-IT validation** - Flag vague requirements
