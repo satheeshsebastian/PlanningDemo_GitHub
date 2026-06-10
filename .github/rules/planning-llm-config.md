@@ -270,10 +270,10 @@ token_estimate:
 Each skill uses its configured **primary_llm** by default:
 ```
 BRD Generator → Claude Sonnet 4.6
-Story Splitter → Claude Sonnet 4.6
-Test Writer → Claude Sonnet 4.6
+User Story Builder → Claude Sonnet 4.6
+Functional Test Writer → Claude Sonnet 4.6
 Enhancement Detector → Claude Sonnet 4.6
-GitHub Uploader → Claude Sonnet 4.6
+GitHub Issue Uploader → Claude Sonnet 4.6
 ```
 
 ### Rule 2: Complexity-Based Escalation
