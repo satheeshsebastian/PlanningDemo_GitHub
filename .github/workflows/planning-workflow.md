@@ -51,7 +51,7 @@ Stage 1: INPUT & ENHANCEMENT CHECK
 
 Stage 2: BRAINSTORMING & BRD GENERATION
 ├─ Analyze requirement (BMAD framework)
-├─ Generate 4-6 clarifying questions
+├─ Generate 2-3 clarifying questions simple and direct Wait for user responses after each question
 ├─ MANDATORY PAUSE: Wait for user responses
 ├─ Synthesize feedback
 └─ Generate formal BRD document
