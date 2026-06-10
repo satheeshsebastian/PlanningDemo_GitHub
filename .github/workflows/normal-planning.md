@@ -30,7 +30,13 @@ Complete. Result: NO MATCH
 **Skill**: `functional-test-writer` (`.github/skills/functional-test-writer/SKILL.md`)
 
 **Input**: User stories + acceptance criteria
-**Output**: `features/test-cases/[slug]-test-cases.md`
+**Execution**: Parallel sub-agents (1 per story + 1 common)
+**Output**: 
+- `features/test-cases/smart-coupon-system-common-tests.md` (integration)
+- `features/test-cases/smart-coupon-system-SC-001-tests.md` (story 1)
+- `features/test-cases/smart-coupon-system-SC-002-tests.md` (story 2)
+- ... (one per story, 11 total)
+- `features/test-cases/smart-coupon-system-test-index.md` (index)
 
 ### Stage 5: GitHub Integration (Optional)
 **Skill**: `github-issue-uploader` (`.github/skills/github-issue-uploader/SKILL.md`)

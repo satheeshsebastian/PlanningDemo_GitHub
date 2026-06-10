@@ -34,7 +34,12 @@ Complete. Result: MATCH FOUND
 **Skill**: `functional-test-writer` (`.github/skills/functional-test-writer/SKILL.md`)
 
 **Input**: Modified/new stories + acceptance criteria
-**Output**: `features/test-cases/[slug]-test-cases.md` (updated)
+**Execution**: Parallel sub-agents (1 per modified/new story + 1 common)
+**Output**: Updated test case files
+- `features/test-cases/smart-coupon-system-common-tests.md` (updated)
+- `features/test-cases/smart-coupon-system-SC-[modified]-tests.md` (updated)
+- `features/test-cases/smart-coupon-system-SC-[new]-tests.md` (created)
+- `features/test-cases/smart-coupon-system-test-index.md` (updated)
 
 ### Stage 5: GitHub Integration (Optional)
 **Skill**: `github-issue-uploader` (`.github/skills/github-issue-uploader/SKILL.md`)

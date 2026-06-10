@@ -1,0 +1,1583 @@
+{
+  "feature": "smart-coupon-system",
+  "brd_id": "BRD-2026-06-10-smart-coupon-system",
+  "created": "2026-06-10",
+  "generated_from": {
+    "stories": "features/user-stories/SC-001 to SC-011",
+    "tests": "features/test-cases/smart-coupon-system-test-cases.md",
+    "traceability": "features/user-stories/story-traceability.json"
+  },
+  "issues": [
+    {
+      "story_id": "SC-001",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-001",
+      "title": "System Determines Personalized Coupon Eligibility",
+      "slug": "system-determines-personalized-coupon-eligibility",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-001",
+        "T-002",
+        "T-003",
+        "T-004",
+        "T-005",
+        "T-006",
+        "T-007",
+        "T-079"
+      ],
+      "blocks": [
+        "SC-003",
+        "SC-005",
+        "SC-008",
+        "SC-010"
+      ],
+      "blocked_by": [],
+      "related": [
+        "SC-011"
+      ],
+      "requirements": [
+        "FR-001"
+      ],
+      "acceptance_criteria": [
+        "AC-001"
+      ]
+    },
+    {
+      "story_id": "SC-002",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-002",
+      "title": "Marketer Manages Smart Coupon Content",
+      "slug": "marketer-manages-smart-coupon-content",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-008",
+        "T-009",
+        "T-010",
+        "T-011",
+        "T-012",
+        "T-013",
+        "T-014",
+        "T-078"
+      ],
+      "blocks": [
+        "SC-003",
+        "SC-008",
+        "SC-009"
+      ],
+      "blocked_by": [],
+      "related": [
+        "SC-011"
+      ],
+      "requirements": [
+        "FR-002"
+      ],
+      "acceptance_criteria": [
+        "AC-006"
+      ]
+    },
+    {
+      "story_id": "SC-003",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-003",
+      "title": "System Orchestrates Multi-Channel Coupon Delivery",
+      "slug": "system-orchestrates-multi-channel-coupon-delivery",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-015",
+        "T-016",
+        "T-017",
+        "T-018",
+        "T-019",
+        "T-020",
+        "T-021",
+        "T-080",
+        "T-082"
+      ],
+      "blocks": [
+        "SC-004",
+        "SC-006",
+        "SC-007",
+        "SC-010"
+      ],
+      "blocked_by": [
+        "SC-001",
+        "SC-002"
+      ],
+      "related": [
+        "SC-009"
+      ],
+      "requirements": [
+        "FR-003"
+      ],
+      "acceptance_criteria": [
+        "AC-002",
+        "AC-003",
+        "AC-004",
+        "AC-005"
+      ]
+    },
+    {
+      "story_id": "SC-004",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-004",
+      "title": "Member Receives Smart Coupons by Email",
+      "slug": "member-receives-smart-coupons-by-email",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-022",
+        "T-023",
+        "T-024",
+        "T-025",
+        "T-026",
+        "T-027",
+        "T-028",
+        "T-080"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-003",
+        "SC-008"
+      ],
+      "related": [
+        "SC-010"
+      ],
+      "requirements": [
+        "FR-004",
+        "FR-008"
+      ],
+      "acceptance_criteria": [
+        "AC-002",
+        "AC-006",
+        "AC-008"
+      ]
+    },
+    {
+      "story_id": "SC-005",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-005",
+      "title": "Shopper Redeems Eligible Coupons at Checkout",
+      "slug": "shopper-redeems-eligible-coupons-at-checkout",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-029",
+        "T-030",
+        "T-031",
+        "T-032",
+        "T-033",
+        "T-034",
+        "T-035",
+        "T-079"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-001",
+        "SC-008"
+      ],
+      "related": [
+        "SC-010"
+      ],
+      "requirements": [
+        "FR-005",
+        "FR-008"
+      ],
+      "acceptance_criteria": [
+        "AC-003",
+        "AC-006",
+        "AC-008"
+      ]
+    },
+    {
+      "story_id": "SC-006",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-006",
+      "title": "Marketer Adds Smart Coupons to Targeted Campaigns",
+      "slug": "marketer-adds-smart-coupons-to-targeted-campaigns",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-036",
+        "T-037",
+        "T-038",
+        "T-039",
+        "T-040",
+        "T-041",
+        "T-042"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-003",
+        "SC-011"
+      ],
+      "related": [
+        "SC-010"
+      ],
+      "requirements": [
+        "FR-006",
+        "FR-003"
+      ],
+      "acceptance_criteria": [
+        "AC-004",
+        "AC-006"
+      ]
+    },
+    {
+      "story_id": "SC-007",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-007",
+      "title": "Member Discovers Active Coupons In-App",
+      "slug": "member-discovers-active-coupons-in-app",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-043",
+        "T-044",
+        "T-045",
+        "T-046",
+        "T-047",
+        "T-048",
+        "T-049",
+        "T-080"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-003",
+        "SC-008"
+      ],
+      "related": [
+        "SC-010"
+      ],
+      "requirements": [
+        "FR-007",
+        "FR-008"
+      ],
+      "acceptance_criteria": [
+        "AC-005",
+        "AC-006",
+        "AC-008"
+      ]
+    },
+    {
+      "story_id": "SC-008",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-008",
+      "title": "Member Redeems Coupons With Minimal Effort",
+      "slug": "member-redeems-coupons-with-minimal-effort",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-050",
+        "T-051",
+        "T-052",
+        "T-053",
+        "T-054",
+        "T-055",
+        "T-056",
+        "T-079",
+        "T-082"
+      ],
+      "blocks": [
+        "SC-004",
+        "SC-005",
+        "SC-007"
+      ],
+      "blocked_by": [
+        "SC-001",
+        "SC-002"
+      ],
+      "related": [
+        "SC-009"
+      ],
+      "requirements": [
+        "FR-008"
+      ],
+      "acceptance_criteria": [
+        "AC-006",
+        "AC-008"
+      ]
+    },
+    {
+      "story_id": "SC-009",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-009",
+      "title": "System Keeps Offer Details Consistent Across Channels",
+      "slug": "system-keeps-offer-details-consistent-across-channels",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-057",
+        "T-058",
+        "T-059",
+        "T-060",
+        "T-061",
+        "T-062",
+        "T-063"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-002",
+        "SC-011"
+      ],
+      "related": [
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-006",
+        "SC-007"
+      ],
+      "requirements": [
+        "FR-009",
+        "FR-002"
+      ],
+      "acceptance_criteria": [
+        "AC-006",
+        "AC-007"
+      ]
+    },
+    {
+      "story_id": "SC-010",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-010",
+      "title": "Stakeholder Reviews Smart Coupon Performance",
+      "slug": "stakeholder-reviews-smart-coupon-performance",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-064",
+        "T-065",
+        "T-066",
+        "T-067",
+        "T-068",
+        "T-069",
+        "T-070",
+        "T-081"
+      ],
+      "blocks": [],
+      "blocked_by": [
+        "SC-003",
+        "SC-011"
+      ],
+      "related": [
+        "SC-004",
+        "SC-005",
+        "SC-006",
+        "SC-007"
+      ],
+      "requirements": [
+        "FR-010"
+      ],
+      "acceptance_criteria": [
+        "AC-010"
+      ]
+    },
+    {
+      "story_id": "SC-011",
+      "full_story_id": "BRD-2026-06-10-smart-coupon-system-STORY-011",
+      "title": "Admin Configures Smart Coupon Rules and Channels",
+      "slug": "admin-configures-smart-coupon-rules-and-channels",
+      "github_issue_number": null,
+      "github_issue_url": null,
+      "tests_linked": [
+        "T-071",
+        "T-072",
+        "T-073",
+        "T-074",
+        "T-075",
+        "T-076",
+        "T-077",
+        "T-078",
+        "T-082"
+      ],
+      "blocks": [
+        "SC-006",
+        "SC-009",
+        "SC-010"
+      ],
+      "blocked_by": [],
+      "related": [
+        "SC-001",
+        "SC-002",
+        "SC-003"
+      ],
+      "requirements": [
+        "FR-002",
+        "FR-003",
+        "FR-009",
+        "FR-010"
+      ],
+      "acceptance_criteria": [
+        "AC-007",
+        "AC-009",
+        "AC-010"
+      ]
+    }
+  ],
+  "test_issue_groupings": {
+    "story_issue_groups": [
+      {
+        "story_id": "SC-001",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-001",
+          "T-002",
+          "T-003",
+          "T-004",
+          "T-005",
+          "T-006",
+          "T-007"
+        ]
+      },
+      {
+        "story_id": "SC-002",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-008",
+          "T-009",
+          "T-010",
+          "T-011",
+          "T-012",
+          "T-013",
+          "T-014"
+        ]
+      },
+      {
+        "story_id": "SC-003",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-015",
+          "T-016",
+          "T-017",
+          "T-018",
+          "T-019",
+          "T-020",
+          "T-021"
+        ]
+      },
+      {
+        "story_id": "SC-004",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-022",
+          "T-023",
+          "T-024",
+          "T-025",
+          "T-026",
+          "T-027",
+          "T-028"
+        ]
+      },
+      {
+        "story_id": "SC-005",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-029",
+          "T-030",
+          "T-031",
+          "T-032",
+          "T-033",
+          "T-034",
+          "T-035"
+        ]
+      },
+      {
+        "story_id": "SC-006",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-036",
+          "T-037",
+          "T-038",
+          "T-039",
+          "T-040",
+          "T-041",
+          "T-042"
+        ]
+      },
+      {
+        "story_id": "SC-007",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-043",
+          "T-044",
+          "T-045",
+          "T-046",
+          "T-047",
+          "T-048",
+          "T-049"
+        ]
+      },
+      {
+        "story_id": "SC-008",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-050",
+          "T-051",
+          "T-052",
+          "T-053",
+          "T-054",
+          "T-055",
+          "T-056"
+        ]
+      },
+      {
+        "story_id": "SC-009",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-057",
+          "T-058",
+          "T-059",
+          "T-060",
+          "T-061",
+          "T-062",
+          "T-063"
+        ]
+      },
+      {
+        "story_id": "SC-010",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-064",
+          "T-065",
+          "T-066",
+          "T-067",
+          "T-068",
+          "T-069",
+          "T-070"
+        ]
+      },
+      {
+        "story_id": "SC-011",
+        "story_issue_number": null,
+        "test_issue_number": null,
+        "test_ids": [
+          "T-071",
+          "T-072",
+          "T-073",
+          "T-074",
+          "T-075",
+          "T-076",
+          "T-077"
+        ]
+      }
+    ],
+    "cross_cutting_issue_group": {
+      "issue_number": null,
+      "title": "Cross-Cutting Smart Coupon System Validation",
+      "test_ids": [
+        "T-078",
+        "T-079",
+        "T-080",
+        "T-081",
+        "T-082"
+      ],
+      "linked_stories": [
+        "SC-001",
+        "SC-002",
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-007",
+        "SC-008",
+        "SC-010",
+        "SC-011"
+      ]
+    }
+  },
+  "dependency_links": [
+    {
+      "story_id": "SC-001",
+      "issue_number": null,
+      "blocks": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-005",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-008",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ],
+      "blocked_by": [],
+      "related": [
+        {
+          "story_id": "SC-011",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-002",
+      "issue_number": null,
+      "blocks": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-008",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-009",
+          "issue_number": null
+        }
+      ],
+      "blocked_by": [],
+      "related": [
+        {
+          "story_id": "SC-011",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-003",
+      "issue_number": null,
+      "blocks": [
+        {
+          "story_id": "SC-004",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-006",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-007",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ],
+      "blocked_by": [
+        {
+          "story_id": "SC-001",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-002",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-009",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-004",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-008",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-005",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-001",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-008",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-006",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-011",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-007",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-008",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-008",
+      "issue_number": null,
+      "blocks": [
+        {
+          "story_id": "SC-004",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-005",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-007",
+          "issue_number": null
+        }
+      ],
+      "blocked_by": [
+        {
+          "story_id": "SC-001",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-002",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-009",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-009",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-002",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-011",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-004",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-005",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-006",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-007",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-010",
+      "issue_number": null,
+      "blocks": [],
+      "blocked_by": [
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-011",
+          "issue_number": null
+        }
+      ],
+      "related": [
+        {
+          "story_id": "SC-004",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-005",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-006",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-007",
+          "issue_number": null
+        }
+      ]
+    },
+    {
+      "story_id": "SC-011",
+      "issue_number": null,
+      "blocks": [
+        {
+          "story_id": "SC-006",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-009",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-010",
+          "issue_number": null
+        }
+      ],
+      "blocked_by": [],
+      "related": [
+        {
+          "story_id": "SC-001",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-002",
+          "issue_number": null
+        },
+        {
+          "story_id": "SC-003",
+          "issue_number": null
+        }
+      ]
+    }
+  ],
+  "traceability": {
+    "story_to_issue_to_test_case": {
+      "SC-001": {
+        "issue_number": null,
+        "test_cases": [
+          "T-001",
+          "T-002",
+          "T-003",
+          "T-004",
+          "T-005",
+          "T-006",
+          "T-007",
+          "T-079"
+        ]
+      },
+      "SC-002": {
+        "issue_number": null,
+        "test_cases": [
+          "T-008",
+          "T-009",
+          "T-010",
+          "T-011",
+          "T-012",
+          "T-013",
+          "T-014",
+          "T-078"
+        ]
+      },
+      "SC-003": {
+        "issue_number": null,
+        "test_cases": [
+          "T-015",
+          "T-016",
+          "T-017",
+          "T-018",
+          "T-019",
+          "T-020",
+          "T-021",
+          "T-080",
+          "T-082"
+        ]
+      },
+      "SC-004": {
+        "issue_number": null,
+        "test_cases": [
+          "T-022",
+          "T-023",
+          "T-024",
+          "T-025",
+          "T-026",
+          "T-027",
+          "T-028",
+          "T-080"
+        ]
+      },
+      "SC-005": {
+        "issue_number": null,
+        "test_cases": [
+          "T-029",
+          "T-030",
+          "T-031",
+          "T-032",
+          "T-033",
+          "T-034",
+          "T-035",
+          "T-079"
+        ]
+      },
+      "SC-006": {
+        "issue_number": null,
+        "test_cases": [
+          "T-036",
+          "T-037",
+          "T-038",
+          "T-039",
+          "T-040",
+          "T-041",
+          "T-042"
+        ]
+      },
+      "SC-007": {
+        "issue_number": null,
+        "test_cases": [
+          "T-043",
+          "T-044",
+          "T-045",
+          "T-046",
+          "T-047",
+          "T-048",
+          "T-049",
+          "T-080"
+        ]
+      },
+      "SC-008": {
+        "issue_number": null,
+        "test_cases": [
+          "T-050",
+          "T-051",
+          "T-052",
+          "T-053",
+          "T-054",
+          "T-055",
+          "T-056",
+          "T-079",
+          "T-082"
+        ]
+      },
+      "SC-009": {
+        "issue_number": null,
+        "test_cases": [
+          "T-057",
+          "T-058",
+          "T-059",
+          "T-060",
+          "T-061",
+          "T-062",
+          "T-063"
+        ]
+      },
+      "SC-010": {
+        "issue_number": null,
+        "test_cases": [
+          "T-064",
+          "T-065",
+          "T-066",
+          "T-067",
+          "T-068",
+          "T-069",
+          "T-070",
+          "T-081"
+        ]
+      },
+      "SC-011": {
+        "issue_number": null,
+        "test_cases": [
+          "T-071",
+          "T-072",
+          "T-073",
+          "T-074",
+          "T-075",
+          "T-076",
+          "T-077",
+          "T-078",
+          "T-082"
+        ]
+      }
+    },
+    "requirement_to_story": {
+      "FR-001": [
+        "SC-001"
+      ],
+      "FR-002": [
+        "SC-002",
+        "SC-009",
+        "SC-011"
+      ],
+      "FR-003": [
+        "SC-003",
+        "SC-006",
+        "SC-011"
+      ],
+      "FR-004": [
+        "SC-004"
+      ],
+      "FR-008": [
+        "SC-004",
+        "SC-005",
+        "SC-007",
+        "SC-008"
+      ],
+      "FR-005": [
+        "SC-005"
+      ],
+      "FR-006": [
+        "SC-006"
+      ],
+      "FR-007": [
+        "SC-007"
+      ],
+      "FR-009": [
+        "SC-009",
+        "SC-011"
+      ],
+      "FR-010": [
+        "SC-010",
+        "SC-011"
+      ]
+    },
+    "test_case_to_story": {
+      "T-001": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-002": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-003": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-004": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-005": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-006": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-007": {
+        "story_id": "SC-001",
+        "story_issue_number": null
+      },
+      "T-008": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-009": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-010": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-011": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-012": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-013": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-014": {
+        "story_id": "SC-002",
+        "story_issue_number": null
+      },
+      "T-015": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-016": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-017": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-018": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-019": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-020": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-021": {
+        "story_id": "SC-003",
+        "story_issue_number": null
+      },
+      "T-022": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-023": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-024": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-025": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-026": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-027": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-028": {
+        "story_id": "SC-004",
+        "story_issue_number": null
+      },
+      "T-029": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-030": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-031": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-032": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-033": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-034": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-035": {
+        "story_id": "SC-005",
+        "story_issue_number": null
+      },
+      "T-036": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-037": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-038": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-039": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-040": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-041": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-042": {
+        "story_id": "SC-006",
+        "story_issue_number": null
+      },
+      "T-043": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-044": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-045": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-046": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-047": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-048": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-049": {
+        "story_id": "SC-007",
+        "story_issue_number": null
+      },
+      "T-050": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-051": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-052": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-053": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-054": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-055": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-056": {
+        "story_id": "SC-008",
+        "story_issue_number": null
+      },
+      "T-057": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-058": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-059": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-060": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-061": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-062": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-063": {
+        "story_id": "SC-009",
+        "story_issue_number": null
+      },
+      "T-064": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-065": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-066": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-067": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-068": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-069": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-070": {
+        "story_id": "SC-010",
+        "story_issue_number": null
+      },
+      "T-071": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-072": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-073": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-074": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-075": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-076": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-077": {
+        "story_id": "SC-011",
+        "story_issue_number": null
+      },
+      "T-078": {
+        "story_id": [
+          "SC-002",
+          "SC-011"
+        ],
+        "story_issue_number": null
+      },
+      "T-079": {
+        "story_id": [
+          "SC-001",
+          "SC-005",
+          "SC-008"
+        ],
+        "story_issue_number": null
+      },
+      "T-080": {
+        "story_id": [
+          "SC-003",
+          "SC-004",
+          "SC-007"
+        ],
+        "story_issue_number": null
+      },
+      "T-081": {
+        "story_id": [
+          "SC-010"
+        ],
+        "story_issue_number": null
+      },
+      "T-082": {
+        "story_id": [
+          "SC-003",
+          "SC-008",
+          "SC-011"
+        ],
+        "story_issue_number": null
+      }
+    },
+    "cross_cutting_tests": [
+      {
+        "test_id": "T-078",
+        "title": "Protect coupon authoring and audit inputs from malicious content injection",
+        "story_links": [
+          "SC-002",
+          "SC-011"
+        ],
+        "traceability": [
+          "FR-002",
+          "security control"
+        ],
+        "scenario_type": "Security / Negative",
+        "priority": "P0"
+      },
+      {
+        "test_id": "T-079",
+        "title": "Maintain coupon eligibility and checkout responsiveness under launch-day load",
+        "story_links": [
+          "SC-001",
+          "SC-005",
+          "SC-008"
+        ],
+        "traceability": "Launch readiness / performance",
+        "scenario_type": "Performance",
+        "priority": "P1"
+      },
+      {
+        "test_id": "T-080",
+        "title": "Recover multi-channel delivery after temporary adapter outage",
+        "story_links": [
+          "SC-003",
+          "SC-004",
+          "SC-007"
+        ],
+        "traceability": [
+          "FR-003",
+          "recovery"
+        ],
+        "scenario_type": "Recovery / Integration",
+        "priority": "P1"
+      },
+      {
+        "test_id": "T-081",
+        "title": "Preserve data completeness through analytics pipeline restart",
+        "story_links": "SC-010",
+        "traceability": [
+          "FR-010",
+          "recovery"
+        ],
+        "scenario_type": "Recovery / Negative",
+        "priority": "P1"
+      },
+      {
+        "test_id": "T-082",
+        "title": "Validate end-to-end release smoke across supported and unsupported channels",
+        "story_links": [
+          "SC-003",
+          "SC-008",
+          "SC-011"
+        ],
+        "traceability": [
+          "AC-008",
+          "AC-009",
+          "launch smoke"
+        ],
+        "scenario_type": "Integration / Smoke",
+        "priority": "P0"
+      }
+    ]
+  },
+  "test_summary": {
+    "total_cases": 82,
+    "story_specific_cases": 77,
+    "cross_cutting_cases": 5,
+    "by_story": {
+      "SC-001": {
+        "title": "System Determines Personalized Coupon Eligibility",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-002": {
+        "title": "Marketer Manages Smart Coupon Content",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-003": {
+        "title": "System Orchestrates Multi-Channel Coupon Delivery",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 2,
+        "total_linked": 9
+      },
+      "SC-004": {
+        "title": "Member Receives Smart Coupons by Email",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-005": {
+        "title": "Shopper Redeems Eligible Coupons at Checkout",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-006": {
+        "title": "Marketer Adds Smart Coupons to Targeted Campaigns",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 0,
+        "total_linked": 7
+      },
+      "SC-007": {
+        "title": "Member Discovers Active Coupons In-App",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-008": {
+        "title": "Member Redeems Coupons With Minimal Effort",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 2,
+        "total_linked": 9
+      },
+      "SC-009": {
+        "title": "System Keeps Offer Details Consistent Across Channels",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 0,
+        "total_linked": 7
+      },
+      "SC-010": {
+        "title": "Stakeholder Reviews Smart Coupon Performance",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 1,
+        "total_linked": 8
+      },
+      "SC-011": {
+        "title": "Admin Configures Smart Coupon Rules and Channels",
+        "story_test_cases": 7,
+        "cross_cutting_test_cases": 2,
+        "total_linked": 9
+      }
+    }
+  }
+}

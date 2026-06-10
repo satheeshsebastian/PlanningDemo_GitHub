@@ -2,51 +2,120 @@
 name: functional-test-writer
 description: >
   Analyzes user stories and generates comprehensive functional test cases in BDD 
-  Given/When/Then format. Covers happy paths, error scenarios, and edge cases. 
+  format. Supports two modes: (1) Parallel per-story generation for speed, 
+  (2) Monolithic single-file generation for simplicity. 
   Creates test case documents organized by user story.
 allowed-tools: read, edit, shell, create, glob
 ---
 
 # Functional Test Writer Skill
 
-You are a Quality Assurance Engineer specializing in creating comprehensive, well-structured functional test cases from user stories.
+Quality Assurance Engineer specializing in creating comprehensive functional test cases from user stories in BDD format.
+
+## Two Execution Modes
+
+### Mode 1: Parallel Per-Story (RECOMMENDED - Fast)
+Generate test cases in parallel, one agent per story.
+- **Execution**: 11 parallel sub-agents for 11 stories + 1 for common tests
+- **Files**: 12 separate test case files
+- **Speed**: ~8-10s vs 30-40s sequential
+- **File Output**:
+  ```
+  features/test-cases/
+  ├── smart-coupon-system-common-tests.md (cross-cutting, integration)
+  ├── smart-coupon-system-SC-001-tests.md (story 1 only)
+  ├── smart-coupon-system-SC-002-tests.md (story 2 only)
+  ├── ... (one file per story)
+  └── smart-coupon-system-test-index.md (links all tests)
+  ```
+
+### Mode 2: Monolithic (Legacy - Simple)
+Generate all test cases in one file (original approach).
+- **Execution**: Single agent, sequential
+- **Files**: 1 large test case file
+- **Speed**: 30-40s
+- **File Output**: `features/test-cases/smart-coupon-system-test-cases.md`
 
 ## Your Workflow
 
-### Step 1: Input Reception
-- Read provided story files using the `read` tool
-- Extract acceptance criteria
-- Identify test scenarios
-- Organize by story and scenario type
+### Step 1: Determine Execution Mode
+Check input parameters:
+- `mode: "parallel"` → Use Mode 1 (per-story files)
+- `mode: "monolithic"` → Use Mode 2 (single file)
+- Default: `parallel` (faster)
 
-### Step 2: Test Scenario Analysis
-For each user story, identify all test scenarios:
+### Step 2: If Mode = Parallel
 
-**Scenario Categories**:
-1. **Happy Path Tests** (Success scenarios)
-2. **Error Scenario Tests** (Failure paths)
-3. **Edge Case Tests** (Boundary conditions)
-4. **Integration Tests** (Multi-step workflows)
-5. **Permission/Security Tests** (Authorization)
-6. **Performance Tests** (Optional - flag if needed)
+#### Sub-Task: Common Test Cases (Shared)
+Generate cross-cutting test cases that apply across stories:
+- System integration tests
+- Error recovery scenarios
+- Data consistency validations
+- Performance baselines
+- Security/compliance checks
 
-**Test Scenario Template**:
+**Output**: `features/test-cases/smart-coupon-system-common-tests.md`
+
+#### Sub-Task: Per-Story Test Cases (Parallel)
+For EACH user story (SC-001 through SC-011), run ONE parallel agent:
+
+**Each agent generates**:
+- Happy path tests (3-5 test cases per story)
+- Error/negative tests (2-3 test cases per story)
+- Edge case tests (2-3 test cases per story)
+- Story-specific integration tests (1-2 test cases per story)
+
+**Output per story**: `features/test-cases/smart-coupon-system-SC-XXX-tests.md`
+
+#### Sub-Task: Test Index (After all parallel agents complete)
+Generate index file linking all test files:
+- `features/test-cases/smart-coupon-system-test-index.md`
+- Lists all 12 test files
+- Summary table: Test count per story
+- Cross-references between test files
+- Execution sequencing recommendations
+
+### Step 3: If Mode = Monolithic
+
+Generate all test cases in single file (see original workflow below).
+
+### Step 4: Test Scenario Analysis
+For each user story, identify test scenarios:
+
+**Categories**:
+1. **Happy Path** - Success scenarios
+2. **Error Scenarios** - Failure paths
+3. **Edge Cases** - Boundary conditions
+4. **Integration** - Multi-step workflows
+5. **Security** - Authorization/permissions
+6. **Recovery** - Error recovery
+
+**BDD Format**:
 ```
-TC-[NUMBER]: [Test Case Name]
-
-Scenario Type: [Happy Path / Error / Edge Case / Integration / Security]
+TC-XXX: [Test Case Name]
+Story: [SC-001]
+Type: [Happy Path / Error / Edge / Integration / Security]
 Priority: [P0 Critical / P1 High / P2 Medium / P3 Low]
-Acceptance Criterion: [Which AC does this test verify?]
+AC Verified: [AC-001]
 
-Given [Initial state/precondition]
-When [User action or system event]
-Then [Expected outcome/result]
-  And [Additional verification point 1]
-  And [Additional verification point 2]
+Given [Precondition]
+When [Action]
+Then [Expected outcome]
+  And [Verification 2]
+  And [Verification 3]
 ```
 
-### Step 3: Generate Test Cases
-Create comprehensive test cases following the template in `.github/rules/planning-standards.md`.
+### Step 5: Save All Test Files
+
+**If Parallel Mode**:
+- Save each per-story file immediately
+- Save common tests file
+- Save test index
+- Total files: 13 (12 test files + 1 index)
+
+**If Monolithic Mode**:
+- Save single comprehensive file
+- Total files: 1
 
 **Each Test Case MUST include**:
 1. Basic Information (ID, Name, Story reference, Type)
@@ -166,12 +235,14 @@ Display:
 
 ## Skill Behavior Rules
 
-- **Read acceptance criteria carefully** - Ensure 1:1 mapping to test cases
-- **Create comprehensive coverage** - Happy path + errors + edge cases
-- **Use BDD Given/When/Then format** - Standardized, readable test language
-- **Be specific with test data** - Include actual values, not placeholders
-- **Include traceability** - Link tests to acceptance criteria
-- **Save all files before completing** - Use `create` for each test file
-- **Organize logically** - One file per story with clear grouping
-- **Prioritize appropriately** - P0 for blocking, P3 for edge cases
-- **Support both manual and automated** - Include both execution styles
+- **Support two modes**: Parallel (per-story + common) and Monolithic (single file)
+- **Default to parallel mode** for speed (8-10s vs 30-40s)
+- **Per-story files** keep tests focused and reviewable
+- **Common file** captures cross-cutting test scenarios
+- **Test index** links all files and provides summary
+- **BDD format** for all test cases (Given/When/Then)
+- **Complete test data** - use real values, not placeholders
+- **Traceability** - link tests to AC, stories, and BRD requirements
+- **Prioritize tests** - P0 critical path, P1 important, P2 nice-to-have
+- **Save all files** before completing
+- **Support parallel agents** - each story agent runs independently
