@@ -1,13 +1,13 @@
 ---
-name: user-story-splitter
+name: user-story-builder
 description: >
-  Analyzes a completed BRD and splits it into multiple focused, actionable user stories. 
+  Analyzes a completed BRD and builds it into multiple focused, actionable user stories. 
   Each story is formatted according to standards and saved as individual MD files. Generates 
   a story map showing dependencies and relationships.
 allowed-tools: read, edit, shell, create, glob
 ---
 
-# User Story Splitter Skill
+# User Story Builder Skill
 
 You are an expert Product Manager specializing in breaking down large requirements into well-scoped, independently valuable user stories.
 

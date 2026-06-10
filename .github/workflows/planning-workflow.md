@@ -148,10 +148,10 @@ Stage 6: COMPLETION & SUMMARY
 
 ## Stage 3: User Story Decomposition
 
-**LLM Configuration**: See `planning-llm-config.md` - User Story Splitter section
+**LLM Configuration**: See `planning-llm-config.md` - User Story Builder section
 
 **Process**:
-1. Invoke **user-story-splitter** skill
+1. Invoke **user-story-builder** skill
    - LLM: Claude Sonnet 4.6 (primary) or Claude Opus 4.8 (if escalated)
    - Maintain consistency with Stage 2 LLM if possible
    - Tokens: ~6-11K estimated
@@ -342,7 +342,7 @@ Your planning workflow succeeds when:
 │   └── planning-standards.md            ← All templates & standards
 ├── skills/
 │   ├── brd-generator/SKILL.md
-│   ├── user-story-splitter/SKILL.md
+│   ├── user-story-builder/SKILL.md
 │   ├── functional-test-writer/SKILL.md
 │   ├── enhancement-detector/SKILL.md
 │   └── github-issue-uploader/SKILL.md

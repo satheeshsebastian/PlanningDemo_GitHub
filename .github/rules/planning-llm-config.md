@@ -86,13 +86,13 @@ token_estimate:
 
 ---
 
-### SKILL 2: User Story Splitter
+### SKILL 2: User Story Builder
 
 **Role**: Product Manager / Agile Coach  
 **Key Capability**: Decomposition, dependency analysis, INVEST validation
 
 ```yaml
-skill: user-story-splitter
+skill: user-story-builder
 workflow_step: Stage 3 (Story Decomposition)
 
 primary_llm:
@@ -429,7 +429,7 @@ Every workflow execution must capture:
     {
       "stage_number": 3,
       "stage_name": "User Story Decomposition",
-      "skill": "user-story-splitter",
+      "skill": "user-story-builder",
       "llm_used": {
         "model": "Claude Sonnet 4.6",
         "version": "4.6-20250305",

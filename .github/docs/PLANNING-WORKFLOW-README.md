@@ -351,7 +351,7 @@ All artifacts follow these standards:
 │
 ├── skills/
 │   ├── brd-generator/SKILL.md         ← BRD generation
-│   ├── user-story-splitter/SKILL.md   ← Story decomposition
+│   ├── user-story-builder/SKILL.md   ← Story decomposition
 │   ├── functional-test-writer/SKILL.md ← Test case writing
 │   ├── enhancement-detector/SKILL.md  ← Existing artifact detection
 │   └── github-issue-uploader/SKILL.md ← GitHub integration

@@ -16,7 +16,7 @@ You are a DevOps and GitHub specialist who manages issue creation, project board
 ### Step 1: Input Reception & Pre-Upload Validation (NEW VALIDATION STEP)
 - User Story Files paths (from `features/user-stories/`)
 - Test Case Files paths (from `features/test-cases/`, optional)
-- Traceability Files (story-traceability.json from User Story Splitter)
+- Traceability Files (story-traceability.json from User Story Builder)
 - GitHub Configuration:
   - GitHub organization/repo
   - Project board name (if using, optional)
