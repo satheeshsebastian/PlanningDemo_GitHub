@@ -1,0 +1,45 @@
+name: Normal Planning Workflow (New Feature)
+description: >
+  Creates BRD and user stories for NEW features. 
+  Enhancement detector confirms feature doesn't exist, then proceeds with full BRD generation.
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  normal-planning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1️⃣ Enhancement Detection (Verify Feature is NEW)
+        uses: ./.github/skills/enhancement-detector
+        with:
+          workflow: normal
+          purpose: "Verify this is a NEW feature (not enhancement of existing)"
+      
+      - name: 2️⃣ BRD Generation
+        uses: ./.github/skills/brd-generator
+        with:
+          feature_input: ${{ github.event.inputs.feature }}
+          max_questions: 3
+          interaction_style: "conversational"
+      
+      - name: 3️⃣ User Story Building
+        uses: ./.github/skills/user-story-builder
+        with:
+          brd_file: ${{ steps.brd-generation.outputs.brd_path }}
+          create_individual_files: true
+          approve_before_complete: true
+      
+      - name: 4️⃣ Generate Functional Tests (Optional)
+        uses: ./.github/skills/functional-test-writer
+        if: ${{ github.event.inputs.generate_tests == 'true' }}
+        with:
+          user_stories: ${{ steps.user-story-building.outputs.stories_path }}
+      
+      - name: ✅ Summary
+        run: |
+          echo "✅ New Feature Planning Complete"
+          echo "📄 BRD: features/brd/"
+          echo "📋 Stories: features/user-stories/"
+          echo "🧪 Tests: features/test-cases/ (if generated)"
+          echo "Next: Review artifacts, then upload to GitHub with github-issue-uploader"

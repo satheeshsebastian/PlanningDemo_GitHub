@@ -17,8 +17,8 @@ You are a requirements analyst who specializes in identifying when a new feature
 - Feature description (brief description of new requirement)
 - Optional keywords to search for
 
-### Step 2: Search for Existing Artifacts
-Search the codebase for existing planning artifacts:
+### Step 2: Search for Existing Artifacts (ACTIVE SEARCH)
+MANDATORY: Actively search the codebase for existing planning artifacts:
 
 **Search Locations**:
 ```
@@ -29,11 +29,15 @@ features/
 └── implementation-plans/     # Implementation artifacts
 ```
 
-**Search Strategy**:
-1. Extract keywords from feature description
-2. Search file names and content for matches
-3. Use `glob` and grep tools for discovery
-4. Look for semantic similarity (not just exact matches)
+**Search Execution** (DO NOT SKIP):
+1. Use `glob` to list ALL .md files in features/brd/ and features/user-stories/
+2. Extract keywords from feature description (2-3 key terms)
+3. Search file names for keyword matches (exact + partial)
+4. Search file CONTENT for keyword matches using grep
+5. Calculate relevance score for each match (0-100%)
+6. Look for semantic similarity, not just exact matches
+
+**CRITICAL**: If NO files found in features/ directories, report "NO EXISTING ARTIFACTS FOUND" clearly to user. Do NOT assume this is enhancement scenario—this is NEW feature detection.
 
 ### Step 3: Analyze Findings
 For each potential match found, analyze:
