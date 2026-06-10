@@ -303,7 +303,64 @@ Every workflow run will be tracked with:
 
 ---
 
-## Workflow Architecture & Routing
+## About Workflow Documentation (Markdown vs. YAML)
+
+### Why Markdown Files?
+
+**Workflows are documented as Markdown (`.md`), not YAML (`.yml`)**
+
+**Advantages**:
+- ✅ **Human-Readable**: Easy to understand process steps
+- ✅ **Version Controlled**: Git tracks all changes
+- ✅ **Skill-Driven**: References to actual `.github/skills/` files
+- ✅ **Flexible**: Workflow can be executed via Copilot CLI agent
+- ✅ **Maintainable**: Update process docs without changing code
+- ✅ **Team Communication**: Share workflows with non-technical stakeholders
+
+**How They Work**:
+1. User provides requirements
+2. Copilot CLI reads the appropriate workflow markdown (normal or enhancement)
+3. Workflow orchestrates the skills in sequence
+4. Each skill has its own SKILL.md file with detailed execution logic
+5. Skills interact with the file system (create, edit, read operations)
+6. Artifacts are generated in `features/` directory as markdown files
+
+### Workflow Execution Model
+
+```
+User Input
+    ↓
+Copilot CLI Agent
+    ├─ Reads: .github/workflows/planning-workflow.md (master guide)
+    ├─ Reads: .github/workflows/normal-planning.md OR enhancement-planning.md
+    ├─ Invokes Skill 1: enhancement-detector
+    │   └─ Executes: .github/skills/enhancement-detector/SKILL.md
+    ├─ Routes to normal or enhancement path
+    ├─ Invokes Skill 2: brd-generator OR enhancement-modifier
+    │   └─ Executes: .github/skills/[skill-name]/SKILL.md
+    │   └─ Creates: features/brd/[slug]-v[N].md
+    ├─ Invokes Skill 3: user-story-builder OR enhancement-story-updater
+    │   └─ Executes: .github/skills/[skill-name]/SKILL.md
+    │   └─ Creates: features/user-stories/[slug-*.md]
+    ├─ Invokes Skill 4: functional-test-writer (optional)
+    │   └─ Executes: .github/skills/functional-test-writer/SKILL.md
+    │   └─ Creates: features/test-cases/[slug]-test-cases.md
+    ├─ Invokes Skill 5: github-issue-uploader (optional)
+    │   └─ Executes: .github/skills/github-issue-uploader/SKILL.md
+    │   └─ Creates: features/github-sync/[slug]-issue-map.json
+    └─ Complete: Stage 6 summary
+```
+
+### Workflow Files
+
+| File | Type | Purpose |
+|------|------|---------|
+| `planning-workflow.md` | Master Documentation | Defines complete 6-stage process; routing logic |
+| `normal-planning.md` | Workflow Documentation | Detailed steps for NEW feature path |
+| `enhancement-planning.md` | Workflow Documentation | Detailed steps for ENHANCEMENT path |
+| `.github/skills/*/SKILL.md` | Skill Definitions | Executable logic for each step |
+
+---
 
 ### Master Workflow (`planning-workflow.md` - This Document)
 - **Purpose**: Defines the complete planning process (6 stages)
@@ -311,7 +368,7 @@ Every workflow run will be tracked with:
 - **Decision Point**: Stage 1 - Enhancement Detection
 - **Routing**: Directs to appropriate sub-workflow based on feature detection
 
-### Normal Planning Workflow (`.github/workflows/normal-planning.yml`)
+### Normal Planning Workflow (`.github/workflows/normal-planning.md`)
 **When to Use**: Feature is brand new (enhancement-detector finds NO match)
 
 **Flow**:
@@ -334,6 +391,8 @@ Stage 5: github-issue-uploader (optional)
 Stage 6: Completion report
 ```
 
+**See**: `.github/workflows/normal-planning.md` for complete workflow details
+
 **Artifacts Generated**:
 - `features/brd/[slug]-v1.0.md` (new BRD)
 - `features/brd/[slug]-assumptions.md` (assumptions)
@@ -343,7 +402,7 @@ Stage 6: Completion report
 - `features/test-cases/[slug]-test-cases.md` (if tests enabled)
 - `features/github-sync/[slug]-issue-map.json` (if GitHub enabled)
 
-### Enhancement Planning Workflow (`.github/workflows/enhancement-planning.yml`)
+### Enhancement Planning Workflow (`.github/workflows/enhancement-planning.md`)
 **When to Use**: Feature exists and you want to enhance it (enhancement-detector finds MATCH > 70%)
 
 **Flow**:
@@ -371,6 +430,8 @@ Stage 5: github-issue-uploader (optional)
                     ↓
 Stage 6: Completion report
 ```
+
+**See**: `.github/workflows/enhancement-planning.md` for complete workflow details
 
 **Artifacts Generated/Updated**:
 - `features/brd/[slug]-v2.1.md` (updated BRD, version bumped)
@@ -479,8 +540,8 @@ Your planning workflow succeeds when:
 │   └── github-issue-uploader/SKILL.md
 └── workflows/
     ├── planning-workflow.md             ← Master orchestration (this file)
-    ├── normal-planning.yml              ← NEW (new feature path)
-    └── enhancement-planning.yml         ← NEW (enhancement path)
+    ├── normal-planning.md               ← Workflow for new features (DOCUMENTATION)
+    └── enhancement-planning.md          ← Workflow for enhancements (DOCUMENTATION)
 
 features/
 ├── brd/
@@ -497,6 +558,8 @@ features/
 │   └── [slug]-issue-map.json            ← GitHub tracking
 └── CHANGELOG.md                         ← Version tracking (enhancements)
 ```
+
+**Note**: All workflow files are **MARKDOWN documentation**, not YAML executables. They describe the process step-by-step for manual execution and skill orchestration.
 
 ---
 
