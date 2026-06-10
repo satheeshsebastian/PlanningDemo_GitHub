@@ -1,0 +1,120 @@
+{
+  "brd_id": "BRD-2026-06-10-smart-checkout",
+  "created_at": "2026-06-10T12:35:00Z",
+  "github_repo": "PlanningDemo_GitHub",
+  "project_status": "Ready for GitHub Upload",
+  "summary": {
+    "total_stories": 11,
+    "total_story_points": 76,
+    "total_test_cases": 156,
+    "must_stories": 8,
+    "should_stories": 3,
+    "sprint_0_stories": 2,
+    "sprint_1_stories": 8,
+    "sprint_2_stories": 2,
+    "github_upload_status": "PENDING",
+    "issues_created": 0,
+    "creation_timestamp": "2026-06-10T12:35:00Z"
+  },
+  "stories": [
+    {
+      "story_id": "SC-001",
+      "slug": "customer-launch-app",
+      "title": "Customer Launches Smart Checkout App",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 5,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-002",
+      "slug": "customer-scan-barcode",
+      "title": "Customer Scans Item by Barcode",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 8,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-003",
+      "slug": "customer-scan-qr",
+      "title": "Customer Scans Item by QR Code",
+      "priority": "P1",
+      "moscow": "SHOULD",
+      "story_points": 5,
+      "milestone": "Sprint 2: Enhancements"
+    },
+    {
+      "story_id": "SC-004",
+      "slug": "customer-manage-cart",
+      "title": "Customer Manages Cart",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 5,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-005",
+      "slug": "customer-pay-stripe",
+      "title": "Customer Completes Payment via Stripe",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 8,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-006",
+      "slug": "customer-receive-receipt",
+      "title": "Customer Receives Digital Receipt",
+      "priority": "P1",
+      "moscow": "SHOULD",
+      "story_points": 5,
+      "milestone": "Sprint 2: Enhancements"
+    },
+    {
+      "story_id": "SC-007",
+      "slug": "customer-exit-validation",
+      "title": "Customer Passes Exit Validation",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 8,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-008",
+      "slug": "associate-escalation",
+      "title": "Store Associate Handles Failed Scans",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 8,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-009",
+      "slug": "manager-dashboard",
+      "title": "Store Manager Monitors Transactions & Fraud",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 13,
+      "milestone": "Sprint 1: MVP Core Features"
+    },
+    {
+      "story_id": "SC-010",
+      "slug": "backend-pos-integration",
+      "title": "System Integrates with POS for Real-Time Inventory",
+      "priority": "P0",
+      "moscow": "MUST",
+      "story_points": 13,
+      "milestone": "Sprint 0: Foundation"
+    },
+    {
+      "story_id": "SC-011",
+      "slug": "backend-network-resilience",
+      "title": "System Handles Network Issues Gracefully",
+      "priority": "P1",
+      "moscow": "SHOULD",
+      "story_points": 8,
+      "milestone": "Sprint 0: Foundation"
+    }
+  ]
+}
