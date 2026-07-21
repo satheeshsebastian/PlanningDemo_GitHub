@@ -1,62 +1,20 @@
-# Planning Workflow - Smart Auto-Detection & Routing
+# New Feature Planning Workflow
 
-Intelligently detects whether a requirement is for a new feature or enhancement, then routes to the appropriate workflow automatically.
+Creates Business Requirement Document (BRD) and user stories for brand new features.
 
-**Design Pattern**: See `WORKFLOW-AUTO-DETECTION-DESIGN.md` for detailed logic
+**When to Use**: Auto-routed by Stage 0 when enhancement detector confidence < 40% (no existing artifacts found)
 
-## Execution Sequence
-
-### Stage 0: Enhancement Detection (AUTOMATIC - No User Input)
-**Responsibility**: Auto-detect feature type and route to appropriate workflow
-
-**Logic**:
-1. Extract feature slug from user input
-2. Search for existing artifacts:
-   - BRD files in `features/brd/[slug]*.md` (+50% confidence)
-   - User stories in `features/user-stories/[slug]*.md` (+30% confidence)
-   - Test cases in `features/test-cases/[slug]*.md` (+20% confidence)
-   - GitHub issues for feature (+10% confidence)
-   - Keyword matching in artifacts (+5% confidence)
-
-3. Calculate total confidence score
-4. Route decision:
-   - **≥ 70% confidence**: AUTO-ROUTE to `enhancement-planning` workflow
-   - **< 40% confidence**: AUTO-ROUTE to `new-feature-planning` workflow (THIS WORKFLOW)
-   - **40-70% confidence**: ASK USER ("Is this updating an existing feature?")
-
-**Output**: 
-- Detection result logged to execution report
-- Workflow route determined
-- No user interaction required (except ambiguous cases)
-
-**Examples**:
-- Input: "Smart Coupon System - Add push notifications"
-  - Detection: Existing BRD + 7 stories + 114 tests found
-  - Confidence: 85% → AUTO-ROUTE to enhancement-planning ✓
-
-- Input: "New Referral Program with rewards"
-  - Detection: No existing artifacts found
-  - Confidence: 5% → AUTO-ROUTE to new-feature-planning ✓
-
-- Input: "Loyalty benefits updates"
-  - Detection: Partial match (30% match on stories)
-  - Confidence: 40% → ASK USER ⚠️
+**Design Pattern**: See `planning-workflow-master.md` for auto-detection logic
 
 ---
-
-## New Feature Planning Workflow (New Features)
-
-Creates BRD and user stories for brand new features.
-
-**When to Use**: Enhancement detector confidence < 40% (automatic detection)
 
 ## Execution Sequence
 
 ### Stage 1: BRD Generation ✓
-Routed from Stage 0 auto-detection (confidence < 40%)
 
-### Stage 2: BRD Generation
 **Skill**: `brd-generator` (`.github/skills/brd-generator/SKILL.md`)
+
+**Why Here**: Routed from master workflow Stage 0 when confidence < 40%
 
 **Input**: Raw requirement + user responses
 **Output**: `features/brd/[slug]-v1.0.md`, `features/brd/[slug]-assumptions.md`
