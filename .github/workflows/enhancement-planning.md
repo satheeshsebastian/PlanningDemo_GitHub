@@ -17,7 +17,7 @@ Updates existing BRD and modifies/creates related user stories.
 3. Calculate confidence score
 4. Route decision:
    - **≥ 70% confidence**: AUTO-ROUTE to this workflow (enhancement-planning)
-   - **< 40% confidence**: AUTO-ROUTE to normal-planning
+   - **< 40% confidence**: AUTO-ROUTE to new-feature-planning
    - **40-70% confidence**: ASK USER for clarification
 
 **Output**: Detection result logged to execution report
@@ -86,7 +86,7 @@ Complete. Result: MATCH FOUND (auto-detected in Stage 0)
 
 **When to Execute**: 
 - Automatically triggered after github-issue-uploader completes (Stage 5)
-- Run at end of EVERY planning workflow (both normal-planning and enhancement-planning)
+- Run at end of EVERY planning workflow (both new-feature-planning and enhancement-planning)
 - No user approval required
 
 **Input**: Metadata from all previous stages

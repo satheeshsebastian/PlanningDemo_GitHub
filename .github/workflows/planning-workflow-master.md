@@ -9,7 +9,7 @@
 ## 🎯 Overview
 
 The Master Planning Workflow intelligently detects whether a user requirement is for:
-1. **New Feature** → Routes to `normal-planning` workflow
+1. **New Feature** → Routes to `new-feature-planning` workflow
 2. **Enhancement** → Routes to `enhancement-planning` workflow
 3. **Ambiguous** → Asks user for clarification
 
@@ -85,7 +85,7 @@ if (confidence >= 70) {
   user_interaction = "NONE";
   auto_route = true;
 } else if (confidence < 40) {
-  route = "normal-planning";
+  route = "new-feature-planning";
   user_interaction = "NONE";
   auto_route = true;
 } else {
@@ -93,7 +93,7 @@ if (confidence >= 70) {
   user_choice = ask_user(
     "Is this updating an existing feature? (Yes/No)"
   );
-  route = user_choice ? "enhancement-planning" : "normal-planning";
+  route = user_choice ? "enhancement-planning" : "new-feature-planning";
   user_interaction = "YES";
   auto_route = false;
 }
@@ -236,7 +236,7 @@ DETECTION:
 ├─ Ambiguity: None
 │
 DECISION:
-├─ Route: normal-planning ✓
+├─ Route: new-feature-planning ✓
 ├─ User interaction: NONE ✓
 ├─ Rationale: "No existing artifacts found"
 └─ Auto-route: TRUE ✓
@@ -306,7 +306,7 @@ Track over time:
 
 1. **New Feature Detection**
    - Input: Completely new feature
-   - Expected: confidence < 40%, route normal-planning
+   - Expected: confidence < 40%, route new-feature-planning
    - Status: ✓
 
 2. **Enhancement Detection**
@@ -354,7 +354,7 @@ This enables:
 ## 📚 Related Documents
 
 - `WORKFLOW-AUTO-DETECTION-DESIGN.md` - Detailed design & algorithm
-- `normal-planning.md` - New feature workflow
+- `new-feature-planning.md` - New feature workflow
 - `enhancement-planning.md` - Enhancement workflow
 - Enhancement Detector Skill: `.github/skills/enhancement-detector/SKILL.md`
 

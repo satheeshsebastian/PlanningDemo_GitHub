@@ -21,7 +21,7 @@ Intelligently detects whether a requirement is for a new feature or enhancement,
 3. Calculate total confidence score
 4. Route decision:
    - **≥ 70% confidence**: AUTO-ROUTE to `enhancement-planning` workflow
-   - **< 40% confidence**: AUTO-ROUTE to `normal-planning` workflow (THIS WORKFLOW)
+   - **< 40% confidence**: AUTO-ROUTE to `new-feature-planning` workflow (THIS WORKFLOW)
    - **40-70% confidence**: ASK USER ("Is this updating an existing feature?")
 
 **Output**: 
@@ -36,7 +36,7 @@ Intelligently detects whether a requirement is for a new feature or enhancement,
 
 - Input: "New Referral Program with rewards"
   - Detection: No existing artifacts found
-  - Confidence: 5% → AUTO-ROUTE to normal-planning ✓
+  - Confidence: 5% → AUTO-ROUTE to new-feature-planning ✓
 
 - Input: "Loyalty benefits updates"
   - Detection: Partial match (30% match on stories)
@@ -44,7 +44,7 @@ Intelligently detects whether a requirement is for a new feature or enhancement,
 
 ---
 
-## Normal Planning Workflow (New Features)
+## New Feature Planning Workflow (New Features)
 
 Creates BRD and user stories for brand new features.
 
@@ -95,7 +95,7 @@ Routed from Stage 0 auto-detection (confidence < 40%)
 
 **When to Execute**: 
 - Automatically triggered after github-issue-uploader completes (Stage 5)
-- Run at end of EVERY planning workflow (both normal-planning and enhancement-planning)
+- Run at end of EVERY planning workflow (both new-feature-planning and enhancement-planning)
 - No user approval required
 
 **Input**: Metadata from all previous stages
