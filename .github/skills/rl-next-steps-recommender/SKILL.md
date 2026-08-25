@@ -11,6 +11,11 @@ allowed-tools: read, edit, shell, create, glob
 
 You close the loop: **signals → actions → rewards → policy → next steps**.
 
+**Standard**: `.github/rules/agentic-rl-standards.md` — offline, in-context agentic RL with
+verifiable rewards, group-relative advantage, bounded (trust-region) policy updates, off-policy
+evaluation before activation, and human oversight as ground truth. No model weights are changed;
+the "policy" is an explicit, human-reviewable configuration file.
+
 **Inputs**:
 - `features/analysis/scorecard-{RUN_ID}.json` (Stage 8 rewards)
 - `features/analysis/result-analysis-{RUN_ID}.json` (Stage 7 findings)
@@ -29,10 +34,13 @@ You close the loop: **signals → actions → rewards → policy → next steps*
 | **Episode** | One workflow run (`RUN_ID`), Stage 0 → Stage 9 |
 | **State `s`** | Context at a decision point: feature slug, existing artifacts, confidence score, stage, complexity, token budget, prior override history |
 | **Action `a`** | The AI action taken (route decision, question asked, artifact written, escalation, version bump…) |
-| **Reward `r`** | Per-action reward from the scoring-agent (−1.0 … +1.0) |
+| **Reward `r`** | Per-action reward from the scoring-agent, produced by deterministic verifiers (−1.0 … +1.0) |
 | **Return `G`** | Discounted sum of rewards to the end of the episode (`γ = 0.8`) |
+| **Advantage `A`** | Group-relative advantage vs. the last 5 comparable runs (GRPO-style) |
 | **Policy `π(a|s)`** | Preference weights stored in `rl-policy-state.json` that bias future decisions |
+| **Trust region** | Bounded updates (`α = 0.2`, ±5 confidence points, `visits ≥ 3`) that keep the policy near the last known-good one |
 | **Exploration** | Deliberately trying an alternative action on low-confidence states (`ε = 0.1`) |
+| **Off-policy evaluation** | Counterfactual replay of a proposed change over logged past episodes before it is activated |
 
 ## Your Workflow
 
@@ -41,26 +49,44 @@ From the audit log + scorecard, produce the `(state, action, reward, next_state)
 every decision point of the run. Bucket states so they generalise (e.g. confidence bands
 `<40 / 40-70 / ≥70`, complexity `simple / complex`, path `new / enhancement`).
 
-### Step 2: Compute returns
+### Step 2: Compute returns and advantages
 For each tuple compute the discounted return `G_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + …`
 so early decisions inherit credit/blame for their downstream consequences.
 
-### Step 3: Update the policy (incremental, conservative)
+Then normalise against the comparison group from the scorecard
+(`group_relative_advantage`, last 5 runs of the same workflow path) so that changes in task
+difficulty are not mistaken for policy improvement or regression. Policy updates use the
+**advantage-adjusted return**, not the raw return.
+
+### Step 3: Update the policy (incremental, conservative, trust-region)
 For each `(state_bucket, action)` pair update the value estimate:
 
 ```
-Q(s,a) ← Q(s,a) + α · [ G − Q(s,a) ]        with learning rate α = 0.2
+Q(s,a) ← Q(s,a) + α · [ G_adv − Q(s,a) ]     with learning rate α = 0.2
 visits(s,a) ← visits(s,a) + 1
 ```
 
-**Guardrails**:
+**Guardrails** (per `.github/rules/agentic-rl-standards.md`):
 - Never let a single episode flip a rule — require `visits ≥ 3` before a policy change is
   marked `active`; below that it is `candidate`.
 - Human overrides count as **corrective feedback with double weight** — they are the strongest
-  signal available.
+  signal available and act as the ground truth for alignment.
 - Any policy change that would reduce a human approval gate must be marked
   `requires_human_approval: true` and can never auto-activate.
-- Cap the confidence-threshold movement at ±5 points per run.
+- Cap the confidence-threshold movement at ±5 points per run (trust region).
+- Never modify the rubric, the verifiers, `.github/rules/*` or the audit log.
+
+### Step 3b: Off-policy evaluation before activation
+For each candidate change, replay it counterfactually against the **logged historical
+episodes** in `features/audit/` and estimate the uplift it would have produced (importance-
+weighted / doubly-robust style estimate over comparable state buckets). Record:
+
+```
+{ "estimated_uplift": +2.4, "supporting_episodes": 6, "confidence": "medium" }
+```
+
+A change activates only when `visits ≥ 3` **and** the estimated uplift is positive; otherwise
+it stays `candidate`. Unsupported or negative estimates are reported, not applied.
 
 ### Step 4: Derive the recommended policy adjustments
 Translate high/low `Q` values into concrete, reviewable proposals, e.g.:
@@ -82,13 +108,14 @@ Rank next steps by expected value = `Q(s,a) × impact × confidence`:
 ### Step 6: Emit `NEXT-STEPS-{RUN_ID}.md`
 
 ```
-1. Learning Summary        — run score, grade, delta vs. baseline, top reward drains
-2. Policy Updates Applied  — table: state bucket | action | old Q | new Q | status
-3. Policy Updates Proposed — candidate changes awaiting human approval
-4. Next Best Actions       — Immediate / Next run / Backlog, each with owner + expected reward
-5. Exploration Experiment  — hypothesis, action, success metric, review date
-6. Open Risks & Regressions — dimensions trending down
-7. Evidence Appendix       — event_ids, findings and rewards backing every recommendation
+1. Learning Summary        — run score, grade, group-relative advantage, top reward drains
+2. Worst-Rollout Review    — the 3 lowest-reward actions, what went wrong, prevention
+3. Policy Updates Applied  — table: state bucket | action | old Q | new Q | visits | status
+4. Policy Updates Proposed — candidates + off-policy uplift estimate, awaiting human approval
+5. Next Best Actions       — Immediate / Next run / Backlog, each with owner + expected reward
+6. Exploration Experiment  — hypothesis, action, success metric, review date
+7. Open Risks & Regressions — dimensions trending down, rollback candidates, gaming suspicions
+8. Evidence Appendix       — event_ids, verifier results and rewards backing every recommendation
 ```
 
 ### Step 7: Persist `rl-policy-state.json`
@@ -96,10 +123,14 @@ Rank next steps by expected value = `Q(s,a) × impact × confidence`:
 ```json
 {
   "policy_version": 4,
+  "rubric_version": "1.0",
   "updated_at": "2026-06-11T13:40:00Z",
   "learning_rate": 0.2,
   "discount_factor": 0.8,
   "exploration_rate": 0.1,
+  "max_threshold_delta_per_run": 5,
+  "min_visits_to_activate": 3,
+  "human_override_weight": 2.0,
   "episodes": 12,
   "q_values": [
     {
@@ -114,14 +145,22 @@ Rank next steps by expected value = `Q(s,a) × impact × confidence`:
     }
   ],
   "rolling_baselines": {
-    "run_score": 84.9, "coverage_percent": 95.1, "override_rate": 0.11
+    "run_score": 84.9, "coverage_percent": 95.1, "override_rate": 0.11,
+    "group_window": 5
   },
   "pending_approval": [
     {
       "change": "Raise ambiguity lower bound 40 → 45",
       "evidence": ["RUN-2026-06-11-...-01/F-003"],
+      "off_policy_estimate": { "estimated_uplift": 2.4, "supporting_episodes": 6,
+                               "confidence": "medium" },
       "requires_human_approval": true
     }
+  ],
+  "change_history": [
+    { "policy_version": 3, "change": "Add negative-path test rule",
+      "activated_at": "2026-06-04T09:00:00Z", "status": "active",
+      "post_change_advantage": [0.31, 0.44] }
   ]
 }
 ```
@@ -138,7 +177,10 @@ change made or proposed — policy mutation is itself an auditable AI action.
 - **Weight human corrections highest** — overrides are the ground truth.
 - **Explore deliberately, not accidentally** — one labelled experiment per run, with a metric.
 - **Prevent reward hacking** — never recommend actions that inflate scores without improving
-  artifacts (e.g. generating extra tests with no acceptance-criteria source).
-- **Detect regression** — if a previously applied policy change degrades scores over two runs,
-  recommend rollback and mark it `reverted`.
+  artifacts (e.g. generating extra tests with no acceptance-criteria source); never propose
+  changes to the rubric, the verifiers or the audit log.
+- **Detect regression** — if a previously applied policy change is followed by two runs with
+  negative group-relative advantage on its target dimension, recommend rollback and mark it
+  `reverted`.
+- **Inspect failures, not just averages** — the worst rollouts of every run must be reviewed.
 - **Never edit planning artifacts** — Stage 9 recommends; the next run executes.

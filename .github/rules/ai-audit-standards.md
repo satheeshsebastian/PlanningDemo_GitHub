@@ -22,8 +22,23 @@ The audit trail answers five questions for every step:
 
 ---
 
-## 📁 Audit Artifacts (per run)
+## 📐 Standards Alignment
 
+The schema and rules below follow established observability, provenance and AI-governance
+practice rather than any single vendor's approach:
+
+| Practice | Adopted here |
+|----------|--------------|
+| **OpenTelemetry GenAI semantic conventions** (spans/events for model calls, tools, tokens) | `llm` block on every event: model, settings, input/output tokens; one event per tool action with duration and status |
+| **W3C PROV-O provenance** (entity / activity / agent) | Every artifact (entity) links to the action (activity) and the skill (agent) that produced it |
+| **Structured, append-only event logging** (JSONL, immutable, correlation IDs) | `run_id` + sequential `event_id`; corrections are new events, never edits |
+| **NIST AI RMF (Measure/Manage), ISO/IEC 42001, EU AI Act art. 12** | Complete traceability of AI-authored artifacts, recorded human oversight, retention with the run artifacts |
+| **Agent-trajectory evaluation practice** (evaluate the path, not just the answer) | Signals, rejected alternatives and human gates are logged so the whole trajectory can be replayed |
+| **Privacy-by-design / data minimisation** | Log references (paths, issue numbers), never secrets or personal data; redact free text |
+
+---
+
+## 📁 Audit Artifacts (per run)
 ```
 features/audit/
 ├── ai-signal-log-{RUN_ID}.jsonl      # Append-only event stream (one JSON per line)
@@ -194,3 +209,4 @@ Run at the end of Stage 6 (execution report) and again in Stage 7 (result analyz
 
 **Owner**: Planning Workflow Team
 **Last Updated**: 2026-06-11
+**Related**: `.github/rules/agentic-rl-standards.md` (how rewards are derived from this log)
