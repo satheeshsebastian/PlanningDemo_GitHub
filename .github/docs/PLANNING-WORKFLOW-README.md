@@ -12,6 +12,8 @@ The **Planning Workflow** is a comprehensive, professional process for transform
 ✅ **GitHub Issues** - Team-ready work tracking  
 ✅ **Dependency Maps** - Story and test relationships  
 ✅ **Tracking Artifacts** - Issue ID mappings for future reference  
+✅ **AI Signal & Action Audit Trail** - Every AI signal, action, decision and human override  
+✅ **Result Analysis, Scorecard & RL Next Steps** - Verifier-based scoring and a learning loop  
 
 ---
 
@@ -48,7 +50,7 @@ The **Planning Workflow** is a comprehensive, professional process for transform
 
 ---
 
-## Workflow Stages (6 Steps)
+## Workflow Stages (9 Steps + Continuous Auditing)
 
 ### Stage 1: Input & Enhancement Detection
 
@@ -176,6 +178,72 @@ The **Planning Workflow** is a comprehensive, professional process for transform
 
 **Duration**: 2 minutes (report only)
 
+**Quality Gate**: The report fails if the AI signal audit log is incomplete.
+
+---
+
+### Stage 7: Result Analysis (automatic)
+
+**Skill**: `result-analyzer`
+
+**What happens**:
+1. The AI signal/action audit trail is replayed against the artifacts actually produced
+2. Coverage gaps, traceability breaks, rule violations and unaudited actions are detected
+3. Each finding is given a severity and a root cause, with evidence (`event_id` + file path)
+4. Results are compared to previous runs of the same feature (trend)
+
+**What You Get**: `features/analysis/RESULT-ANALYSIS-{RUN_ID}.md` + JSON findings
+
+---
+
+### Stage 8: Scoring (automatic)
+
+**Skill**: `scoring-agent`
+
+**What happens**:
+1. Deterministic verifiers score coverage, conformance, audit completeness, efficiency and
+   human alignment (no LLM grades its own work)
+2. A run score (0-100) and grade are produced, plus a per-stage breakdown
+3. Every AI action receives a reinforcement-learning reward (−1.0 … +1.0)
+4. The run is normalised against the last 5 comparable runs (group-relative advantage)
+
+**What You Get**: `features/analysis/SCORECARD-{RUN_ID}.md` + JSON scorecard
+
+---
+
+### Stage 9: RL Next Steps (automatic)
+
+**Skill**: `rl-next-steps-recommender`
+
+**What happens**:
+1. The run is turned into an RL episode: state → action → reward → return
+2. The workflow policy (`rl-policy-state.json`) is updated with small, bounded steps
+3. Proposed changes are estimated against past runs before activation; changes touching a human
+   approval gate stay as proposals
+4. Next best actions are ranked (immediate fixes, next-run policy, delivery backlog) plus one
+   labelled exploration experiment
+
+**What You Get**: `features/analysis/NEXT-STEPS-{RUN_ID}.md` + updated policy state
+
+---
+
+## AI Signal & Action Auditing (all stages)
+
+**Skill**: `ai-signal-auditor` — **Standard**: `.github/rules/ai-audit-standards.md`
+
+Every AI signal (what the agent saw) and every AI action (what the agent did — including
+rationale, rules applied, rejected alternatives, and your approvals/overrides) is written to an
+append-only log as it happens:
+
+```
+features/audit/ai-signal-log-{RUN_ID}.jsonl
+features/audit/ai-action-audit-{RUN_ID}.md
+features/audit/audit-index.json
+```
+
+**Rule**: no silent AI action. An artifact with no matching audit event becomes a Stage 7
+finding, and the audit trail is the input to scoring and learning.
+
 ---
 
 ## Artifact Organization
@@ -197,8 +265,22 @@ features/
 │   ├── employee-enroll-course-test-cases.md
 │   └── employee-track-progress-test-cases.md
 │
-└── github-sync/
-    └── employee-certification-issue-map.json
+├── github-sync/
+│   └── employee-certification-issue-map.json
+│
+├── audit/
+│   ├── ai-signal-log-{RUN_ID}.jsonl
+│   ├── ai-action-audit-{RUN_ID}.md
+│   └── audit-index.json
+│
+├── reports/
+│   └── PLANNING-WORKFLOW-EXECUTION-{RUN_DATE}.md
+│
+└── analysis/
+    ├── RESULT-ANALYSIS-{RUN_ID}.md
+    ├── SCORECARD-{RUN_ID}.md
+    ├── NEXT-STEPS-{RUN_ID}.md
+    └── rl-policy-state.json
 ```
 
 ---
@@ -354,10 +436,17 @@ All artifacts follow these standards:
 │   ├── user-story-builder/SKILL.md   ← Story decomposition
 │   ├── functional-test-writer/SKILL.md ← Test case writing
 │   ├── enhancement-detector/SKILL.md  ← Existing artifact detection
-│   └── github-issue-uploader/SKILL.md ← GitHub integration
+│   ├── github-issue-uploader/SKILL.md ← GitHub integration
+│   ├── ai-signal-auditor/SKILL.md     ← AI signal & action audit trail (all stages)
+│   ├── result-analyzer/SKILL.md       ← Stage 7: outcome & anomaly analysis
+│   ├── scoring-agent/SKILL.md         ← Stage 8: verifier-based scoring & rewards
+│   └── rl-next-steps-recommender/SKILL.md ← Stage 9: RL policy update & next steps
 │
 └── rules/
-    └── planning-standards.md          ← Templates & standards
+    ├── planning-standards.md          ← Templates & standards
+    ├── planning-llm-config.md         ← LLM selection & token budgets
+    ├── ai-audit-standards.md          ← AI signal/action audit schema (mandatory)
+    └── agentic-rl-standards.md        ← Agentic RL rewards, policy & guardrails
 ```
 
 ---
@@ -373,6 +462,8 @@ Your planning workflow is successful when:
 ✅ Stakeholders approve all artifacts  
 ✅ Team can begin development immediately  
 ✅ No requirement rework needed during development  
+✅ Every AI signal and action is captured in the audit trail (audit completeness = 100%)  
+✅ The run is scored by deterministic verifiers, and next steps come from the RL loop  
 
 ---
 

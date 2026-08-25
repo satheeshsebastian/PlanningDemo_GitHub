@@ -82,6 +82,16 @@ ENHANCEMENT DATA (if applicable):
 └─ Backward compatibility (YES/NO)
 ```
 
+AUDIT DATA (mandatory - from `features/audit/ai-signal-log-{RUN_ID}.jsonl`):
+```
+├─ Total events captured (by type: signal / action / human_gate / error)
+├─ Actions by autonomy (auto / confirmed / overridden)
+├─ Human interventions (question, response, override, AI original proposal)
+├─ Errors and retries
+├─ Token usage per stage (from the `llm` block of each event)
+└─ Audit integrity result (AUDIT_COMPLETE / AUDIT_INCOMPLETE + gap list)
+```
+
 ### Step 2: Calculate Aggregate Metrics
 
 Compute totals and rollups:
@@ -137,7 +147,19 @@ Before finalizing report, run quality checks:
    ├─ All story points assigned ✓
    ├─ All assumptions linked ✓
    └─ All next steps defined ✓
+
+6. AI Signal & Action Audit (MANDATORY - see .github/rules/ai-audit-standards.md)
+   ├─ Signal log exists and is valid JSONL ✓
+   ├─ Every executed stage has ≥1 event ✓
+   ├─ Every created artifact traced to an action ✓
+   ├─ Every human gate captured ✓
+   ├─ Token counts present on every LLM call ✓
+   └─ No secrets/PII in the log ✓
 ```
+
+**Quality Gate**: If the audit check returns `AUDIT_INCOMPLETE`, Stage 6 is marked FAILED.
+Generate the report anyway, list the gaps, and backfill any reconstructable events
+(`"reconstructed": true`) before continuing to Stage 7.
 
 ### Step 4: Generate Report from Template
 
@@ -327,9 +349,17 @@ Stage 5 → Stage 6
 ├─ Issues created; Stage 6 documents GitHub links
 └─ Stage 6 validates traceability complete
 
+Stage 6 → Stage 7
+├─ Report + audit log handed to result-analyzer
+└─ Audit integrity result gates the analysis
+
+Stage 7 → Stage 8 → Stage 9
+├─ Findings → verifier-based scores & rewards → RL policy update
+└─ Next steps published for the team and for the next run
+
 [FINAL] → Commit/Push
 ├─ Report generated; ready for version control
-└─ Report serves as audit trail for this workflow run
+└─ Report + signal log serve as the audit trail for this workflow run
 ```
 
 ## Examples

@@ -444,6 +444,94 @@
 
 ---
 
+# 🔍 AI SIGNAL & ACTION AUDIT TRAIL
+
+**Standard**: `.github/rules/ai-audit-standards.md`
+**Signal Log**: `features/audit/ai-signal-log-{RUN_ID}.jsonl`
+**Readable Audit**: `features/audit/ai-action-audit-{RUN_ID}.md`
+
+## Audit Completeness
+
+| Check | Result |
+|-------|--------|
+| Valid JSONL, no malformed lines | {AUDIT_JSONL_VALID} |
+| Every executed stage has ≥1 event | {AUDIT_STAGE_COVERAGE} |
+| Every artifact traced to an action | {AUDIT_ARTIFACT_TRACE} |
+| Every human gate captured | {AUDIT_HUMAN_GATES} |
+| Token counts present on every LLM call | {AUDIT_TOKENS} |
+| No secrets/PII in log | {AUDIT_SECRETS} |
+| **Audit Integrity** | **{AUDIT_INTEGRITY}** |
+
+> Stage 6 FAILS its quality gate when `AUDIT_INTEGRITY = AUDIT_INCOMPLETE`.
+
+## Signal & Action Summary
+
+| Stage | Signals | Actions | Auto | Confirmed | Overridden | Errors |
+|-------|---------|---------|------|-----------|------------|--------|
+| 0 Detection | {S0_SIGNALS} | {S0_ACTIONS} | {S0_AUTO} | {S0_CONF} | {S0_OVR} | {S0_ERR} |
+| 1-5 Planning | {S15_SIGNALS} | {S15_ACTIONS} | {S15_AUTO} | {S15_CONF} | {S15_OVR} | {S15_ERR} |
+| 6-9 Report & Learning | {S69_SIGNALS} | {S69_ACTIONS} | {S69_AUTO} | {S69_CONF} | {S69_OVR} | {S69_ERR} |
+
+## Human Interventions
+
+| Event ID | Stage | Question | Response | Override | AI Original Proposal |
+|----------|-------|----------|----------|----------|----------------------|
+| {EVT_ID} | {STAGE} | {QUESTION} | {RESPONSE} | {OVERRIDE} | {AI_PROPOSAL} |
+
+---
+
+# 📋 STAGE 7: Result Analysis
+
+**Skill**: `result-analyzer` | **Artifacts**: `features/analysis/RESULT-ANALYSIS-{RUN_ID}.md`
+
+| Finding | Severity | Type | Stage | Evidence | Root Cause | Recommended Fix |
+|---------|----------|------|-------|----------|------------|-----------------|
+| {F_ID} | {SEVERITY} | {TYPE} | {STAGE} | {EVENT_IDS} | {ROOT_CAUSE} | {FIX} |
+
+- **Requirement Coverage**: {REQ_COVERAGE}%
+- **Test Coverage**: {TEST_COVERAGE}%
+- **Override Rate**: {OVERRIDE_RATE}
+- **Anomalies**: {ANOMALY_COUNT}
+- **Trend vs. previous run**: {TREND_ASSESSMENT}
+
+---
+
+# 📊 STAGE 8: Scoring
+
+**Skill**: `scoring-agent` | **Artifacts**: `features/analysis/SCORECARD-{RUN_ID}.md`
+**Rubric Version**: {RUBRIC_VERSION} | **Verifiers**: V1-V7 (deterministic)
+
+| Dimension | Weight | Score | Group-Relative Advantage |
+|-----------|--------|-------|--------------------------|
+| Completeness | 20% | {D_COMPLETENESS} | {A_COMPLETENESS} |
+| Coverage | 20% | {D_COVERAGE} | {A_COVERAGE} |
+| Correctness | 20% | {D_CORRECTNESS} | {A_CORRECTNESS} |
+| Autonomy | 15% | {D_AUTONOMY} | {A_AUTONOMY} |
+| Efficiency | 15% | {D_EFFICIENCY} | {A_EFFICIENCY} |
+| Auditability | 10% | {D_AUDITABILITY} | {A_AUDITABILITY} |
+| **RUN SCORE** | 100% | **{RUN_SCORE}** | **{RUN_GRADE}** |
+
+- **Top Reward Drains**: {REWARD_DRAINS}
+- **Worst Actions Reviewed**: {WORST_ACTIONS}
+- **Suspected Reward Gaming**: {SUSPECTED_GAMING}
+
+---
+
+# 🔁 STAGE 9: RL Next Steps
+
+**Skill**: `rl-next-steps-recommender` | **Artifacts**: `features/analysis/NEXT-STEPS-{RUN_ID}.md`
+**Policy Version**: {POLICY_VERSION} (α=0.2, γ=0.8, ε=0.1)
+
+| State Bucket | Action | Old Q | New Q | Visits | Off-Policy Uplift | Status |
+|--------------|--------|-------|-------|--------|-------------------|--------|
+| {STATE} | {ACTION} | {Q_OLD} | {Q_NEW} | {VISITS} | {UPLIFT} | {STATUS} |
+
+- **Pending Human Approval**: {PENDING_APPROVALS}
+- **Exploration Experiment**: {EXPERIMENT} (metric: {EXPERIMENT_METRIC})
+- **Rollback Recommendations**: {ROLLBACKS}
+
+---
+
 # 📈 AGGREGATED METRICS & SUMMARY
 
 ## Overall Execution Summary
@@ -451,8 +539,10 @@
 | Metric | Value | Status |
 |--------|-------|--------|
 | **Total Execution Duration** | {TOTAL_DURATION} | ✅ |
-| **Total Stages** | 5 | ✅ |
-| **Stages Successful** | 5/5 | ✅ 100% |
+| **Total Stages** | 9 | ✅ |
+| **Stages Successful** | 9/9 | ✅ 100% |
+| **Audit Integrity** | {AUDIT_INTEGRITY} | ✅ |
+| **Run Score / Grade** | {RUN_SCORE} / {RUN_GRADE} | ✅ |
 | **Total LLM Calls** | {TOTAL_LLM_CALLS} | ✅ |
 | **Total Input Tokens** | {TOTAL_INPUT_TOKENS:,} | ✅ |
 | **Total Output Tokens** | {TOTAL_OUTPUT_TOKENS:,} | ✅ |
@@ -481,6 +571,10 @@
 | Stage 3: Story Builder | {S3_IN} | {S3_OUT} | {S3_TOTAL} | ${S3_COST} |
 | Stage 4: Test Writer | {S4_IN} | {S4_OUT} | {S4_TOTAL} | ${S4_COST} |
 | Stage 5: GitHub Uploader | {S5_IN} | {S5_OUT} | {S5_TOTAL} | ${S5_COST} |
+| Audit: AI Signal Auditor | {SA_IN} | {SA_OUT} | {SA_TOTAL} | ${SA_COST} |
+| Stage 7: Result Analyzer | {S7_IN} | {S7_OUT} | {S7_TOTAL} | ${S7_COST} |
+| Stage 8: Scoring Agent | {S8_IN} | {S8_OUT} | {S8_TOTAL} | ${S8_COST} |
+| Stage 9: RL Next Steps | {S9_IN} | {S9_OUT} | {S9_TOTAL} | ${S9_COST} |
 | **TOTAL** | **{TOTAL_IN}** | **{TOTAL_OUT}** | **{TOTAL_TOKENS}** | **${TOTAL_COST}** |
 
 ## Quality Metrics
@@ -507,6 +601,10 @@
 - [x] Stage 3: Story decomposition complete (11 INVEST-validated stories)
 - [x] Stage 4: Test case generation complete (156 tests)
 - [x] Stage 5: GitHub integration complete (11 issues + tracking)
+- [x] Audit: every AI signal & action captured ({AUDIT_INTEGRITY})
+- [x] Stage 7: Result analysis complete ({ANOMALY_COUNT} findings)
+- [x] Stage 8: Scoring complete ({RUN_SCORE}/{RUN_GRADE}, verifier-based)
+- [x] Stage 9: RL policy updated ({POLICY_VERSION}) and next steps published
 
 ## Next Steps & Recommendations
 
@@ -536,6 +634,14 @@
 - ✅ Dependency mapping requirement
 - ✅ Risk assessment requirement
 - ✅ Assumption documentation requirement
+
+### AI Audit & Learning Rules
+- ✅ No silent AI action (every action has an audit event)
+- ✅ Signal captured before action; rejected alternatives recorded
+- ✅ Human gates and overrides captured verbatim
+- ✅ Rewards from deterministic verifiers only (no self-grading)
+- ✅ Bounded policy updates; approval-gate changes require human sign-off
+- ✅ Anti-reward-hacking guards applied
 
 ### LLM-Specific Rules
 - ✅ Consistency across model versions

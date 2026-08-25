@@ -2,8 +2,8 @@
 ## Skill-to-LLM Role Mapping with Primary & Secondary Options
 
 **Document ID**: LLM-CONFIG-001  
-**Version**: 1.0  
-**Last Updated**: 2026-06-10  
+**Version**: 1.1  
+**Last Updated**: 2026-06-11  
 **Status**: Active  
 
 ---
@@ -16,7 +16,8 @@ The workflow engine should:
 1. Check this config at skill execution time
 2. Use Primary Option if available
 3. Fall back to Secondary Option if Primary unavailable
-4. Document actual LLM used in execution report
+4. Document actual LLM used in execution report and in the AI signal audit log
+   (`.github/rules/ai-audit-standards.md`)
 
 ---
 
@@ -264,6 +265,166 @@ token_estimate:
 
 ---
 
+### SKILL 6: AI Signal Auditor (all stages)
+
+**Role**: Compliance / Observability Engineer
+**Key Capability**: Deterministic structured logging of AI signals and actions
+
+```yaml
+skill: ai-signal-auditor
+workflow_step: All stages (0-9), continuous
+
+primary_llm:
+  name: Claude Sonnet 4.6
+  version: latest
+  rationale: |
+    - Deterministic structured (JSONL) output
+    - Low cost per event, invoked very frequently
+    - No creative reasoning required
+  context_window: 200K tokens
+  recommended_settings:
+    temperature: 0.0  # Fully deterministic - audit records must be reproducible
+    max_tokens: 800   # One event or one summary refresh
+    system_prompt: |
+      You are a compliance engineer. Emit audit events exactly per
+      .github/rules/ai-audit-standards.md. Append-only. Never log secrets or PII.
+      Capture signal before action, including rejected alternatives.
+
+secondary_llm:
+  name: Claude Sonnet 4.6
+  version: latest
+  rationale: |
+    - No escalation needed; auditing must stay cheap and deterministic
+    - If unavailable, halt the workflow rather than run unaudited
+
+token_estimate:
+  input_tokens: 200-600 per event
+  output_tokens: 150-400 per event
+  total_estimate: 4000-9000 tokens per run (30-60 events)
+```
+
+---
+
+### SKILL 7: Result Analyzer (Stage 7)
+
+**Role**: Quality / Outcome Analyst
+**Key Capability**: Trajectory replay, gap and anomaly detection, root-cause analysis
+
+```yaml
+skill: result-analyzer
+workflow_step: Stage 7 (Result Analysis)
+
+primary_llm:
+  name: Claude Sonnet 4.6
+  version: latest
+  rationale: |
+    - Strong at cross-referencing artifacts against an event log
+    - Good structured output for downstream scoring
+  context_window: 200K tokens
+  recommended_settings:
+    temperature: 0.2  # Analytical, low variance - findings must be repeatable
+    max_tokens: 4000
+    system_prompt: |
+      You are a quality analyst. Replay the AI signal log against produced artifacts.
+      Every finding cites an event_id and/or file path. Analyze, never repair.
+      Separate fact from inference (probable_cause).
+
+secondary_llm:
+  name: Claude Opus 4.8
+  version: latest
+  rationale: |
+    - Long runs (>50 events) or CRITICAL findings needing deeper root-cause reasoning
+    - Enhancement runs with regression/backward-compatibility analysis
+  context_window: 200K tokens
+
+token_estimate:
+  input_tokens: 6000-15000 (audit log + report + artifact index)
+  output_tokens: 2000-4000 (findings + JSON)
+  total_estimate: 8000-19000 tokens
+```
+
+---
+
+### SKILL 8: Scoring Agent (Stage 8)
+
+**Role**: Evaluation Engineer
+**Key Capability**: Verifier-based scoring, reward computation, credit assignment
+
+```yaml
+skill: scoring-agent
+workflow_step: Stage 8 (Scoring)
+
+primary_llm:
+  name: Claude Sonnet 4.6
+  version: latest
+  rationale: |
+    - Arithmetic-heavy, rubric-driven work with fixed formulas
+    - Must be reproducible: same inputs produce the same scorecard
+  context_window: 200K tokens
+  recommended_settings:
+    temperature: 0.0  # MANDATORY - scores must be deterministic and reproducible
+    max_tokens: 3000
+    system_prompt: |
+      You are an evaluation engineer. Scores come from the deterministic verifiers in
+      .github/rules/agentic-rl-standards.md - never from your own opinion of the work.
+      Show the arithmetic for every score. Apply anti-reward-hacking guards.
+
+secondary_llm:
+  name: Claude Opus 4.8
+  version: latest
+  rationale: |
+    - Complex credit assignment across many interdependent findings
+  context_window: 200K tokens
+
+token_estimate:
+  input_tokens: 5000-12000 (analysis + audit log + policy state)
+  output_tokens: 1500-3000 (scorecard + rewards)
+  total_estimate: 6500-15000 tokens
+```
+
+---
+
+### SKILL 9: RL Next-Steps Recommender (Stage 9)
+
+**Role**: Learning / Policy Engineer
+**Key Capability**: Policy update, off-policy evaluation, next-best-action ranking
+
+```yaml
+skill: rl-next-steps-recommender
+workflow_step: Stage 9 (RL Next Steps)
+
+primary_llm:
+  name: Claude Opus 4.8
+  version: latest
+  rationale: |
+    - Policy changes affect every future run - accuracy over cost
+    - Requires careful causal reasoning and counterfactual (off-policy) estimation
+    - Must recognise reward hacking and regression patterns
+  context_window: 200K tokens
+  recommended_settings:
+    temperature: 0.3  # Mostly deterministic; slight reasoning latitude for recommendations
+    max_tokens: 4000
+    system_prompt: |
+      You close the RL loop per .github/rules/agentic-rl-standards.md.
+      Use advantage-adjusted returns, bounded (trust-region) updates and off-policy
+      evaluation before activation. Human overrides are ground truth (2x weight).
+      Approval-gate changes are proposals only. Never edit rules, verifiers or artifacts.
+
+secondary_llm:
+  name: Claude Sonnet 4.6
+  version: latest
+  rationale: |
+    - Fallback when Opus unavailable; keep updates candidate-only in that case
+  context_window: 200K tokens
+
+token_estimate:
+  input_tokens: 6000-14000 (scorecard + analysis + policy state + history)
+  output_tokens: 2000-4000 (next steps + policy state)
+  total_estimate: 8000-18000 tokens
+```
+
+---
+
 ## WORKFLOW-LEVEL LLM SELECTION RULES
 
 ### Rule 1: Skill-Based Primary Selection
@@ -274,7 +435,14 @@ User Story Builder → Claude Sonnet 4.6
 Functional Test Writer → Claude Sonnet 4.6
 Enhancement Detector → Claude Sonnet 4.6
 GitHub Issue Uploader → Claude Sonnet 4.6
+AI Signal Auditor → Claude Sonnet 4.6 (temperature 0.0)
+Result Analyzer → Claude Sonnet 4.6
+Scoring Agent → Claude Sonnet 4.6 (temperature 0.0)
+RL Next-Steps Recommender → Claude Opus 4.8
 ```
+
+**Determinism rule**: `ai-signal-auditor` and `scoring-agent` MUST run at `temperature: 0.0`.
+Audit records and scores are evidence — identical inputs must produce identical outputs.
 
 ### Rule 2: Complexity-Based Escalation
 Use **secondary_llm** (Claude Opus 4.8) if:
@@ -303,20 +471,40 @@ Stage 2 (BRD Generation):         4K-7K tokens
 Stage 3 (Story Decomposition):    6K-11K tokens
 Stage 4 (Test Generation):        7K-12K tokens
 Stage 5 (GitHub Upload):          3.5K-6K tokens
+Stage 7 (Result Analysis):        8K-19K tokens
+Stage 8 (Scoring):                6.5K-15K tokens
+Stage 9 (RL Next Steps):          8K-18K tokens
+Continuous (Signal Auditing):     4K-9K tokens
 ────────────────────────────────
-TOTAL (5 stages):                 24K-43K tokens (per full run)
+TOTAL (planning stages):          24K-43K tokens
+TOTAL (audit + learning loop):    26.5K-61K tokens
+TOTAL (full run):                 50.5K-104K tokens (per full run)
 ```
 
 **Token Budget Rules**:
 - If total estimated tokens < 30K: Use primary LLM (Sonnet 4.6)
 - If 30K-50K: Use secondary LLM (Opus 4.8) for critical stages
 - If > 50K: Split stages, use lighter models where possible
+- **Never** skip auditing (Stage 0-9 events) or Stages 7-9 to save tokens — if the budget is
+  tight, reduce test-generation batch size instead. An unaudited run cannot be scored, and an
+  unscored run contributes nothing to the learning loop.
 
 ### Rule 4: Consistency Within Workflow Run
 **Important**: Once an LLM is selected for a workflow run, maintain consistency:
 - If Stage 2 uses Opus 4.8, recommend using Opus 4.8 for Stages 3-5
 - Document which LLM versions used in execution report
 - Don't switch between Claude and GPT mid-workflow
+
+**Exception**: `ai-signal-auditor` and `scoring-agent` always stay on their deterministic
+configuration (temperature 0.0) regardless of the run-level escalation, so that audit records
+and scores remain reproducible and comparable across runs.
+
+### Rule 5: Evaluation Independence
+The agents that *produce* planning artifacts and the agents that *evaluate* them must not share
+state beyond the audit trail:
+- Stages 7-9 read the audit log and artifacts; they never edit `features/` planning content
+- Stages 0-6 never read or modify the rubric, verifiers or `rl-policy-state.json` mid-run
+- The policy snapshot used for a run is fixed at Stage 0 and recorded in the audit log
 
 ---
 
@@ -739,6 +927,7 @@ budget:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-06-10 | Initial config with 5 skills, 2 LLM tiers |
+| 1.1 | 2026-06-11 | Added ai-signal-auditor, result-analyzer, scoring-agent and rl-next-steps-recommender configs; determinism rule (temp 0.0) for audit/scoring; evaluation-independence rule; updated token budgets |
 | TBD | TBD | Support for additional models |
 | TBD | TBD | Per-organization overrides |
 | TBD | TBD | Token budget management |
