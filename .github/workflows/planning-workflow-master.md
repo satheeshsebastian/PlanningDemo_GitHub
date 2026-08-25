@@ -46,7 +46,18 @@ The Master Planning Workflow intelligently detects whether a user requirement is
     │ NORMAL-PLANNING or              │
     │ ENHANCEMENT-PLANNING            │
     │ (Stages 1-6)                    │
-    └─────────────────────────────────┘
+    └────────────────┬────────────────┘
+                     ↓
+    ┌─────────────────────────────────┐
+    │ LEARNING LOOP (auto, stages 7-9)│
+    │  7. result-analyzer             │
+    │  8. scoring-agent (rewards)     │
+    │  9. rl-next-steps-recommender   │
+    └────────────────┬────────────────┘
+                     ↓
+         policy update → biases next run
+
+  ⟲ ai-signal-auditor captures every signal & action across ALL stages
 ```
 
 ---
@@ -155,6 +166,24 @@ Stage 5: Execution Report (AUTO)
   Input: Metadata from all stages
   Output: Comprehensive workflow report
   Approval: ❌ Not required (audit trail)
+
+Stage 7: Result Analysis (AUTO)
+  Skill: result-analyzer
+  Input: AI signal log + execution report + artifacts
+  Output: RESULT-ANALYSIS + findings JSON
+  Approval: ❌ Not required
+
+Stage 8: Scoring (AUTO)
+  Skill: scoring-agent
+  Input: Result analysis + AI signal log + policy state
+  Output: SCORECARD + per-action RL rewards (verifier-based)
+  Approval: ❌ Not required
+
+Stage 9: RL Next Steps (AUTO)
+  Skill: rl-next-steps-recommender
+  Input: Scorecard + analysis + policy state
+  Output: NEXT-STEPS + updated rl-policy-state.json
+  Approval: ⚠️ Only for policy changes touching human gates
 ```
 
 **Total Duration**: ~6-8 hours (includes approvals)
@@ -186,6 +215,24 @@ Stage 5: Execution Report (AUTO)
   Input: Metadata from all stages
   Output: Comprehensive workflow report
   Approval: ❌ Not required (audit trail)
+
+Stage 7: Result Analysis (AUTO)
+  Skill: result-analyzer
+  Input: AI signal log + execution report + created/modified artifacts
+  Output: RESULT-ANALYSIS + findings JSON (incl. regression & compatibility findings)
+  Approval: ❌ Not required
+
+Stage 8: Scoring (AUTO)
+  Skill: scoring-agent
+  Input: Result analysis + AI signal log + policy state
+  Output: SCORECARD + per-action RL rewards (verifier-based)
+  Approval: ❌ Not required
+
+Stage 9: RL Next Steps (AUTO)
+  Skill: rl-next-steps-recommender
+  Input: Scorecard + analysis + policy state
+  Output: NEXT-STEPS + updated rl-policy-state.json
+  Approval: ⚠️ Only for policy changes touching human gates
 ```
 
 **Total Duration**: ~4-6 hours (fewer approvals)
@@ -323,18 +370,57 @@ Track over time:
 
 ## 🔒 Audit Trail
 
-All detection decisions logged in execution report:
-- What was detected
-- Why (confidence breakdown)
-- What route was selected
-- User input (if any)
-- Timestamp
+**Skill**: `ai-signal-auditor` — **Standard**: `.github/rules/ai-audit-standards.md`
+
+Every AI signal and every AI action across **all** stages (0-9) is captured as it happens in an
+append-only event stream:
+
+```
+features/audit/ai-signal-log-{RUN_ID}.jsonl   # signals, actions, human gates, errors, rewards
+features/audit/ai-action-audit-{RUN_ID}.md    # human-readable audit summary
+features/audit/audit-index.json               # index of every run
+```
+
+Each event records:
+- **Signal** — what was detected, evidence, confidence breakdown
+- **Action** — what was done, rationale, rules applied, rejected alternatives, autonomy level
+- **Human gate** — question asked, answer, override (with the AI's original proposal)
+- **LLM** — model, settings, input/output tokens
+- **Outcome** — status, artifacts, errors, duration
+- **Reward** — back-filled in Stage 8 from deterministic verifiers
+
+**Rule**: No silent AI action. An artifact with no matching audit event is a Stage 7 finding,
+and an incomplete audit fails the Stage 6 quality gate.
 
 This enables:
-- Post-analysis of detection accuracy
-- Learning to improve algorithm
-- Compliance & audit requirements
-- Decision traceability
+- Post-analysis of detection accuracy (Stage 7)
+- Verifiable, explainable scoring of every run (Stage 8)
+- Reinforcement learning to improve the routing/planning policy (Stage 9)
+- Compliance & audit requirements (traceability of AI-authored artifacts)
+- Decision traceability from requirement → story → test → issue → policy change
+
+---
+
+## 🔁 Reinforcement Learning Loop (Stages 7-9)
+
+**Standard**: `.github/rules/agentic-rl-standards.md`
+
+```
+Episode  = one workflow run (RUN_ID)
+State    = feature slug, existing artifacts, confidence band, stage, complexity, budget
+Action   = every AI action captured in the audit log
+Reward   = deterministic verifiers (coverage, conformance, audit, efficiency, alignment)
+Policy   = features/analysis/rl-policy-state.json (explicit, versioned, human-reviewable)
+```
+
+Key guardrails (no model weights are changed):
+- **Verifiable rewards only** — no LLM grading its own work; verifiers are agent-read-only
+- **Group-relative advantage** — a run is judged against the last 5 comparable runs
+- **Bounded updates** — `α = 0.2`, `γ = 0.8`, max ±5 confidence points per run, `visits ≥ 3`
+- **Off-policy evaluation** — proposed changes replayed on logged episodes before activation
+- **Human overrides weighted 2×** and approval-gate changes never auto-apply
+- **Anti-reward-hacking** — volume never scores; untraceable artifacts are penalised
+- **Rollback** — a change followed by two negative-advantage runs is reverted
 
 ---
 
@@ -356,7 +442,13 @@ This enables:
 - `WORKFLOW-AUTO-DETECTION-DESIGN.md` - Detailed design & algorithm
 - `normal-planning.md` - New feature workflow
 - `enhancement-planning.md` - Enhancement workflow
+- `.github/rules/ai-audit-standards.md` - AI signal & action audit schema and rules
+- `.github/rules/agentic-rl-standards.md` - Agentic RL standards (rewards, policy, guardrails)
 - Enhancement Detector Skill: `.github/skills/enhancement-detector/SKILL.md`
+- AI Signal Auditor Skill: `.github/skills/ai-signal-auditor/SKILL.md`
+- Result Analyzer Skill: `.github/skills/result-analyzer/SKILL.md`
+- Scoring Agent Skill: `.github/skills/scoring-agent/SKILL.md`
+- RL Next-Steps Recommender Skill: `.github/skills/rl-next-steps-recommender/SKILL.md`
 
 ---
 
