@@ -2,7 +2,7 @@
 
 **Version**: 1.0
 **Status**: Active - MANDATORY for every planning workflow run
-**Applies To**: All stages (0-9) of `normal-planning` and `enhancement-planning`
+**Applies To**: All stages (0-9) of `new-feature-planning` and `enhancement-planning`
 
 ---
 

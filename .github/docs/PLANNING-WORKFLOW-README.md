@@ -396,7 +396,7 @@ All artifacts follow these standards:
 
 ### Need Help?
 - Review `.github/rules/planning-standards.md` for detailed templates
-- Check workflow guide at `.github/workflows/planning-workflow.md`
+- Check workflow guide at `.github/workflows/planning-workflow-master.md`
 - Review skill documentation in `.github/skills/*/SKILL.md`
 
 ---
@@ -429,7 +429,9 @@ All artifacts follow these standards:
 ```
 .github/
 ├── workflows/
-│   └── planning-workflow.md           ← Main orchestration guide
+│   ├── planning-workflow-master.md    ← Main orchestration & auto-routing guide
+│   ├── new-feature-planning.md        ← New feature path
+│   └── enhancement-planning.md        ← Enhancement path
 │
 ├── skills/
 │   ├── brd-generator/SKILL.md         ← BRD generation

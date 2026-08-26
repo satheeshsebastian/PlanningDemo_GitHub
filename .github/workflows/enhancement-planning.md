@@ -1,47 +1,20 @@
-# Enhancement Planning Workflow (Existing Features)
+# Enhancement Planning Workflow
 
-Updates existing BRD and modifies/creates related user stories.
+Updates existing Business Requirement Document (BRD) and modifies/creates related user stories for existing features.
 
-**When to Use**: Enhancement detector confidence ≥ 70% (automatic detection)
+**When to Use**: Auto-routed by Stage 0 when enhancement detector confidence ≥ 70% (existing artifacts found)
 
-**Design Pattern**: See `WORKFLOW-AUTO-DETECTION-DESIGN.md` for detection logic
-
-## Execution Sequence
-
-### Stage 0: Enhancement Detection (AUTOMATIC - No User Input)
-**Responsibility**: Auto-detect feature type and route to appropriate workflow
-
-**Logic**:
-1. Extract feature slug from user input
-2. Search for existing artifacts (BRD, stories, tests, GitHub issues)
-3. Calculate confidence score
-4. Route decision:
-   - **≥ 70% confidence**: AUTO-ROUTE to this workflow (enhancement-planning)
-   - **< 40% confidence**: AUTO-ROUTE to normal-planning
-   - **40-70% confidence**: ASK USER for clarification
-
-**Output**: Detection result logged to execution report
-
-**Example**:
-- Input: "Smart Coupon System - Add push notifications"
-- Detection: Existing BRD + 7 stories + 114 tests found
-- Confidence: 85% → AUTO-ROUTE to enhancement-planning ✓
+**Design Pattern**: See `planning-workflow-master.md` for auto-detection logic
 
 ---
 
-## Enhancement Planning Workflow (Existing Features)
-
-Updates existing BRD and modifies/creates related user stories.
-
-**Status**: Routed from Stage 0 auto-detection (confidence ≥ 70%)
-
 ## Execution Sequence
 
-### Stage 1: Enhancement Detection ✓
-Complete. Result: MATCH FOUND (auto-detected in Stage 0)
+### Stage 1: Enhancement BRD Modifier ✓
 
-### Stage 2: Enhancement BRD Modifier
 **Skill**: `enhancement-modifier` (`.github/skills/enhancement-modifier/SKILL.md`)
+
+**Why Here**: Routed from master workflow Stage 0 when confidence ≥ 70%
 
 **Input**: Existing BRD + enhancement requirements + user responses
 **Output**: 
@@ -86,7 +59,7 @@ Complete. Result: MATCH FOUND (auto-detected in Stage 0)
 
 **When to Execute**: 
 - Automatically triggered after github-issue-uploader completes (Stage 5)
-- Run at end of EVERY planning workflow (both normal-planning and enhancement-planning)
+- Run at end of EVERY planning workflow (both new-feature-planning and enhancement-planning)
 - No user approval required
 
 **Input**: Metadata from all previous stages
