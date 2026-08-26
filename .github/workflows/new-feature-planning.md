@@ -93,6 +93,69 @@ Creates Business Requirement Document (BRD) and user stories for brand new featu
 
 **Approval Gate**: None (auto-generated for audit trail)
 
+**Quality Gate**: Stage 6 FAILS if `ai-signal-auditor` reports `AUDIT_INCOMPLETE`
+
+### Stage 7: Result Analysis (MANDATORY & AUTOMATIC)
+**Skill**: `result-analyzer` (`.github/skills/result-analyzer/SKILL.md`)
+
+**Input**: AI signal log + execution report + all artifacts produced
+**Output**:
+- `features/analysis/RESULT-ANALYSIS-{RUN_ID}.md`
+- `features/analysis/result-analysis-{RUN_ID}.json`
+
+**Purpose**: Replay the audit trail against actual artifacts; detect coverage gaps,
+traceability breaks, rule violations, silent (unaudited) actions and efficiency outliers.
+**Approval Gate**: None
+
+### Stage 8: Scoring (MANDATORY & AUTOMATIC)
+**Skill**: `scoring-agent` (`.github/skills/scoring-agent/SKILL.md`)
+
+**Input**: Result analysis + AI signal log + `features/analysis/rl-policy-state.json`
+**Output**:
+- `features/analysis/SCORECARD-{RUN_ID}.md`
+- `features/analysis/scorecard-{RUN_ID}.json`
+- `reward` values back-filled into the AI signal log
+
+**Purpose**: Score the run (completeness, coverage, correctness, autonomy, efficiency,
+auditability) and compute per-action RL rewards.
+**Approval Gate**: None
+
+### Stage 9: RL Next Steps (MANDATORY & AUTOMATIC)
+**Skill**: `rl-next-steps-recommender` (`.github/skills/rl-next-steps-recommender/SKILL.md`)
+
+**Input**: Scorecard + result analysis + AI signal log + policy state
+**Output**:
+- `features/analysis/NEXT-STEPS-{RUN_ID}.md`
+- `features/analysis/rl-policy-state.json` (updated)
+
+**Purpose**: Apply the reinforcement-learning loop (state → action → reward → policy update)
+and recommend next best actions for this run and for future runs.
+**Approval Gate**: None for recommendations; policy changes that weaken a human approval gate
+are emitted as `pending_approval` and NEVER auto-applied.
+
+---
+
+## 🔍 Continuous AI Signal & Action Auditing (ALL STAGES)
+
+**Skill**: `ai-signal-auditor` (`.github/skills/ai-signal-auditor/SKILL.md`)
+**Standard**: `.github/rules/ai-audit-standards.md`
+
+Every stage above MUST emit audit events as they happen:
+- `signal` — what the AI observed (inputs, searches, confidence scores, anomalies)
+- `action` — what the AI did (route decision, file write, GitHub call, question asked),
+  including rationale, rules applied, rejected alternatives and autonomy level
+- `human_gate` — every question, approval, rejection and override (verbatim)
+- `error` — every failure and retry
+
+**Audit artifacts**:
+```
+features/audit/ai-signal-log-{RUN_ID}.jsonl   (append-only event stream)
+features/audit/ai-action-audit-{RUN_ID}.md    (human-readable summary)
+features/audit/audit-index.json               (index of all runs)
+```
+
+**Rule**: No silent AI action. An artifact without a matching audit event is a Stage 7 finding.
+
 ## Artifacts Checklist
 
 ```
@@ -103,7 +166,13 @@ Creates Business Requirement Document (BRD) and user stories for brand new featu
 ✓ features/user-stories/story-traceability.json
 ✓ features/test-cases/[slug]-test-cases.md (if enabled)
 ✓ features/github-sync/[slug]-issue-map.json (if enabled)
+✓ features/audit/ai-signal-log-{RUN_ID}.jsonl (mandatory)
+✓ features/audit/ai-action-audit-{RUN_ID}.md (mandatory)
 ✓ features/reports/PLANNING-WORKFLOW-EXECUTION-{RUN_DATE}.md (auto-generated)
+✓ features/analysis/RESULT-ANALYSIS-{RUN_ID}.md (auto-generated)
+✓ features/analysis/SCORECARD-{RUN_ID}.md (auto-generated)
+✓ features/analysis/NEXT-STEPS-{RUN_ID}.md (auto-generated)
+✓ features/analysis/rl-policy-state.json (updated)
 ```
 
 ## Next: See individual skill files for detailed execution logic

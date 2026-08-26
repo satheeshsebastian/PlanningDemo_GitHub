@@ -19,7 +19,9 @@ The Master Planning Workflow intelligently detects whether a user requirement is
 
 ## 🔄 Complete Workflow Flow
 
-**User requirement → Stage 0: Auto-Detection → Route to appropriate path → Execute Stages 1-6**
+**User requirement → Stage 0: Auto-Detection → Route to appropriate path → Execute Stages 1-6 → Stages 7-9: Analyse, Score, Learn**
+
+Every stage emits AI signal/action audit events continuously (see *AI Signal & Action Auditing* below).
 
 ---
 
@@ -74,11 +76,58 @@ Auto-routed when existing artifacts found for this feature
 
 ---
 
+## 📋 Stages 7-9: Analyse, Score, Learn (MANDATORY & AUTOMATIC)
+
+Run after Stage 6 on **both** paths. No approval gates; all outputs are advisory.
+
+| Stage | Skill | Input | Output |
+|-------|-------|-------|--------|
+| 7 | result-analyzer | AI signal log + all artifacts + execution report | `features/analysis/RESULT-ANALYSIS-{RUN_ID}.md` |
+| 8 | scoring-agent | Result analysis + AI signal log + policy state | `features/analysis/SCORECARD-{RUN_ID}.md` + `.json`, rewards back-filled into the signal log |
+| 9 | rl-next-steps-recommender | Scorecard + result analysis + policy state | `features/analysis/NEXT-STEPS-{RUN_ID}.md`, updated `features/analysis/rl-policy-state.json` |
+
+**Standard**: `.github/rules/agentic-rl-standards.md`
+
+**Guardrails**:
+- Scoring uses **verifiable checks** (V1-V7), not self-assessment; the scoring agent never scores its own authored content without a verifier.
+- Policy updates are **bounded** (trust region: threshold changes capped at ±5, minimum 3 visits) and human overrides are weighted 2×.
+- Any policy change that would weaken a human approval gate is emitted as `pending_approval` and **never** auto-applied.
+- Every policy change is versioned in `rl-policy-state.json` with a rollback entry.
+
+---
+
+## 🔍 AI Signal & Action Auditing (ALL STAGES)
+
+**Skill**: `ai-signal-auditor` (`.github/skills/ai-signal-auditor/SKILL.md`)  
+**Standard**: `.github/rules/ai-audit-standards.md`
+
+Every stage MUST emit append-only audit events as they happen:
+
+| Event | Captures |
+|-------|----------|
+| `signal` | What the AI observed — inputs, searches, confidence scores, anomalies |
+| `action` | What the AI did — route decision, file write, GitHub call, question asked, plus rationale, rules applied, rejected alternatives and autonomy level |
+| `human_gate` | Every question, approval, rejection and override (verbatim) |
+| `error` | Every failure and retry |
+
+**Audit artifacts**:
+```
+features/audit/ai-signal-log-{RUN_ID}.jsonl   (append-only event stream)
+features/audit/ai-action-audit-{RUN_ID}.md    (human-readable summary)
+features/audit/audit-index.json               (index of all runs)
+```
+
+**Rule**: No silent AI action. An artifact without a matching audit event is a Stage 7 finding, and an unauditable run is capped at grade C by Stage 8.
+
+---
+
 ## 📚 Related Documents
 
-- `WORKFLOW-AUTO-DETECTION-DESIGN.md` - Detailed design & algorithm
 - `new-feature-planning.md` - New feature workflow
 - `enhancement-planning.md` - Enhancement workflow
+- `.github/rules/ai-audit-standards.md` - AI signal & action audit standard
+- `.github/rules/agentic-rl-standards.md` - Agentic reinforcement-learning standards
+- `.github/rules/planning-llm-config.md` - Per-skill LLM configuration
 - Enhancement Detector Skill: `.github/skills/enhancement-detector/SKILL.md`
 
 ---
